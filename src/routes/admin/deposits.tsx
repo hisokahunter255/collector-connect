@@ -431,6 +431,30 @@ function DepositsPage() {
           ) : null}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={confirmAll} onOpenChange={(o) => !o && setConfirmAll(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>تأكيد مراجعة الكل</DialogTitle>
+            <DialogDescription>
+              سيتم تحديد {formatNumber(pendingRows.length)} عملية في انتظار المراجعة كـ «تمت
+              المراجعة» حسب الفلاتر الحالية.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Button
+              className="flex-1"
+              disabled={reviewAll.isPending}
+              onClick={() => reviewAll.mutate()}
+            >
+              <CheckCircle2 className="size-4" /> تأكيد
+            </Button>
+            <Button variant="secondary" className="flex-1" onClick={() => setConfirmAll(false)}>
+              إلغاء
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
