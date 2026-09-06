@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar } from "recharts";
-import { ArrowDown, ArrowLeft, ArrowUp, Banknote, CalendarRange, FileStack, Gauge, Plus, ReceiptText, WalletCards } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, Banknote, CalendarRange, FileStack, Gauge, Loader2, Plus, ReceiptText, Trash2, WalletCards } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
