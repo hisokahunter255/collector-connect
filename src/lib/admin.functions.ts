@@ -18,6 +18,7 @@ const createSchema = z.object({
   role: z.enum(["collector", "supervisor"]).default("collector"),
   branch_id: z.string().uuid("اختر الفرع").optional().nullable(),
   area_id: z.string().uuid("اختر المنطقة").optional().nullable(),
+  area_ids: z.array(z.string().uuid()).default([]),
   phone: z.string().optional().nullable(),
   active: z.boolean().default(true),
   can_manage_collectors: z.boolean().default(false),
