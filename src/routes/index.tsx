@@ -42,7 +42,7 @@ function LoginPage() {
       const state = await fetchAuthState();
       if (cancelled) return;
       if (state) {
-        navigate({ to: state.role === "admin" ? "/admin/dashboard" : "/collector/dashboard" });
+        navigate({ to: state.role === "collector" ? "/collector/dashboard" : "/admin/dashboard" });
       } else {
         // Prepare demo accounts on first ever visit (no-op afterwards).
         bootstrapDemo().catch(() => undefined);
@@ -83,7 +83,7 @@ function LoginPage() {
     }
     await queryClient.invalidateQueries();
     toast.success(`مرحبًا، ${state.profile?.full_name ?? "مستخدم"}`);
-    navigate({ to: state.role === "admin" ? "/admin/dashboard" : "/collector/dashboard" });
+    navigate({ to: state.role === "collector" ? "/collector/dashboard" : "/admin/dashboard" });
   }
 
   return (

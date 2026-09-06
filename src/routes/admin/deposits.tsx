@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { CheckCircle2, FileSearch, Search, XCircle } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { logAudit } from "@/lib/admin.functions";
 import { fetchDeposits, summarize, type DepositRow } from "@/lib/deposits";
 import {
@@ -73,6 +74,8 @@ function DepositsPage() {
   const [customTo, setCustomTo] = useState("");
 
   const [reviewing, setReviewing] = useState<DepositRow | null>(null);
+  const { data: auth } = useAuth();
+  const canReview = auth?.permissions.deposits ?? false;
   const [adminNote, setAdminNote] = useState("");
 
   const dates = rangeToDates(range, customFrom, customTo);
@@ -178,7 +181,7 @@ function DepositsPage() {
           </p>
         </div>
         <Button
-          disabled={pendingRows.length === 0 || reviewAll.isPending}
+          disabled={!canReview || pendingRows.length === 0 || reviewAll.isPending}
           onClick={() => setConfirmAll(true)}
         >
           <CheckCircle2 className="size-4" /> تمت مراجعة الكل ({formatNumber(pendingRows.length)})
@@ -349,7 +352,7 @@ function DepositsPage() {
                         setAdminNote(row.admin_notes ?? "");
                       }}
                     >
-                      عرض ومراجعة
+                      {canReview ? "عرض ومراجعة" : "عرض"}
                     </Button>
                   </td>
                 </tr>
