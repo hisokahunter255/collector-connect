@@ -240,6 +240,7 @@ function NewUserPage() {
               onValueChange={(v) => {
                 setBranchId(v);
                 setAreaId("");
+                setExtraAreas([]);
               }}
             >
               <SelectTrigger className="h-11">
@@ -256,8 +257,15 @@ function NewUserPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>المنطقة {isSupervisor ? "(اختياري)" : ""}</Label>
-            <Select value={areaId} onValueChange={setAreaId} disabled={!branchId}>
+            <Label>المنطقة الأساسية {isSupervisor ? "(اختياري)" : ""}</Label>
+            <Select
+              value={areaId}
+              onValueChange={(v) => {
+                setAreaId(v);
+                setExtraAreas((prev) => prev.filter((x) => x !== v));
+              }}
+              disabled={!branchId}
+            >
               <SelectTrigger className="h-11">
                 <SelectValue placeholder={branchId ? "اختر المنطقة" : "اختر الفرع أولًا"} />
               </SelectTrigger>
@@ -271,6 +279,36 @@ function NewUserPage() {
             </Select>
           </div>
         </div>
+
+        {branchId && (areas ?? []).length > 1 ? (
+          <div className="space-y-2 rounded-xl bg-secondary/60 p-3">
+            <p className="text-sm font-semibold">مناطق إضافية (اختياري)</p>
+            <p className="text-xs text-muted-foreground">
+              اختر كل المناطق التي سيكون هذا الحساب مسؤولًا عنها بجانب المنطقة الأساسية.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {(areas ?? [])
+                .filter((a) => a.id !== areaId)
+                .map((a) => (
+                  <label
+                    key={a.id}
+                    className="flex items-center justify-between rounded-lg bg-background px-3 py-2 text-sm"
+                  >
+                    <span>{a.name}</span>
+                    <Switch
+                      checked={extraAreas.includes(a.id)}
+                      onCheckedChange={(v) =>
+                        setExtraAreas((prev) =>
+                          v ? [...prev, a.id] : prev.filter((x) => x !== a.id),
+                        )
+                      }
+                    />
+                  </label>
+                ))}
+            </div>
+          </div>
+        ) : null}
+
 
         <div className="space-y-2">
           <Label htmlFor="phone">رقم الهاتف (اختياري)</Label>
