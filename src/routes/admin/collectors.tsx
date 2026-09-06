@@ -62,6 +62,8 @@ type CollectorRow = {
   area_id: string | null;
   branch_name: string | null;
   area_name: string | null;
+  area_ids: string[];
+  area_names: string[];
   deposits: number;
   lastDeposit: string | null;
 };
