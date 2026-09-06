@@ -470,6 +470,32 @@ function DepositsPage() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
+        <DialogContent dir="rtl" className="max-w-md">
+          <DialogHeader className="text-right">
+            <DialogTitle>حذف التوريد نهائيًا؟</DialogTitle>
+            <DialogDescription>
+              سيتم حذف العملية رقم {toDelete?.ref} وصورة الإيصال الخاصة بها، ويستطيع المحصل{" "}
+              {toDelete?.collector_name} رفع التوريد من جديد بشكل صحيح.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Button
+              variant="destructive"
+              className="flex-1"
+              disabled={destroy.isPending}
+              onClick={() => toDelete && destroy.mutate(toDelete)}
+            >
+              {destroy.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+              تأكيد الحذف
+            </Button>
+            <Button variant="secondary" className="flex-1" onClick={() => setToDelete(null)}>
+              إلغاء
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={confirmAll} onOpenChange={(o) => !o && setConfirmAll(false)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
