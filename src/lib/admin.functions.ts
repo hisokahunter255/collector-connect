@@ -73,7 +73,13 @@ export const createCollector = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => createSchema.parse(data))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context as never);
+    const actorRole = await assertCanManageCollectors(context as never);
+    if (data.role === "supervisor" && actorRole !== "admin") {
+      throw new Error("إنشاء حساب مشرف متاح لمدير النظام فقط");
+    }
+    if (data.role === "collector" && (!data.branch_id || !data.area_id)) {
+      throw new Error("اختر الفرع والمنطقة للمحصل");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: existing } = await supabaseAdmin
