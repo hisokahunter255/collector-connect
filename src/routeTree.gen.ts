@@ -14,6 +14,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CollectorRouteRouteImport } from './routes/collector/route'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminBranchesRouteImport } from './routes/admin/branches'
+import { Route as AdminCollectionsRouteImport } from './routes/admin/collections'
 import { Route as AdminCollectorsRouteImport } from './routes/admin/collectors'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminDepositsRouteImport } from './routes/admin/deposits'
@@ -46,6 +47,11 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
 const AdminBranchesRoute = AdminBranchesRouteImport.update({
   id: '/branches',
   path: '/branches',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminCollectorsRoute = AdminCollectorsRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/collector': typeof CollectorRouteRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/deposits': typeof AdminDepositsRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/collector': typeof CollectorRouteRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/deposits': typeof AdminDepositsRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/collector': typeof CollectorRouteRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/deposits': typeof AdminDepositsRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
+    | '/admin/collections'
     | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/deposits'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
+    | '/admin/collections'
     | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/deposits'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
+    | '/admin/collections'
     | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/deposits'
@@ -224,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: '/branches'
       fullPath: '/admin/branches'
       preLoaderRoute: typeof AdminBranchesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/collections': {
+      id: '/admin/collections'
+      path: '/collections'
+      fullPath: '/admin/collections'
+      preLoaderRoute: typeof AdminCollectionsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/collectors': {
@@ -288,6 +307,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminBranchesRoute: typeof AdminBranchesRoute
+  AdminCollectionsRoute: typeof AdminCollectionsRoute
   AdminCollectorsRoute: typeof AdminCollectorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminDepositsRoute: typeof AdminDepositsRoute
@@ -298,6 +318,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminBranchesRoute: AdminBranchesRoute,
+  AdminCollectionsRoute: AdminCollectionsRoute,
   AdminCollectorsRoute: AdminCollectorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminDepositsRoute: AdminDepositsRoute,
