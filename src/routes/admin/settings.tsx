@@ -2,12 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Download, Eraser, ImageOff, Loader2, Settings2, Trash2 } from "lucide-react";
+import { Download, Eraser, ImageOff, Loader2, Settings2, Trash2, Upload } from "lucide-react";
 
 import {
   deleteReviewedReceiptImages,
   exportBackup,
   resetOperationalData,
+  restoreBackup,
   updateMyCredentials,
 } from "@/lib/account.functions";
 import { useAuth } from "@/hooks/use-auth";
