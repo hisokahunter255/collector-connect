@@ -120,7 +120,7 @@ function LoginPage() {
             <div className="space-y-2">
               <Label htmlFor="username">اسم المستخدم</Label>
               <div className="relative">
-                <User2 className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <User2 className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="username"
                   autoComplete="username"
@@ -135,7 +135,7 @@ function LoginPage() {
             <div className="space-y-2">
               <Label htmlFor="password">كلمة المرور</Label>
               <div className="relative">
-                <LockKeyhole className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <LockKeyhole className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="password"
                   type="password"
