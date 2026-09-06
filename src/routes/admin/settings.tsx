@@ -58,6 +58,28 @@ function SettingsPage() {
   const [resetConfirm, setResetConfirm] = useState("");
   const [includeAudit, setIncludeAudit] = useState(true);
   const [includeBranches, setIncludeBranches] = useState(false);
+  const runRestore = useServerFn(restoreBackup);
+  const [restoreFile, setRestoreFile] = useState<File | null>(null);
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [restoring, setRestoring] = useState(false);
+
+  async function confirmRestore() {
+    if (!restoreFile) return;
+    setRestoring(true);
+    try {
+      const text = await restoreFile.text();
+      const result = await runRestore({ data: { json: text } });
+      setRestoreOpen(false);
+      setRestoreFile(null);
+      toast.success(
+        `تمت استعادة النسخة الاحتياطية (${result.counts.deposits} توريد و${result.counts.cycles} دورة تحصيل)`,
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "تعذر استعادة النسخة الاحتياطية");
+    } finally {
+      setRestoring(false);
+    }
+  }
 
   async function downloadBackup() {
     setBackingUp(true);
