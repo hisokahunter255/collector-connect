@@ -5,4 +5,4 @@
 - [x] Build collection dashboard, filters, charts, and cycle creation
 - [x] Build cycle details, periodic entries, close, and reopen flows
 - [x] Add demo cycle data
-- [ ] Verify types, build diagnostics, desktop/mobile UI, and deposits isolation
+- [x] Verify types, build diagnostics, desktop/mobile UI, and deposits isolation
