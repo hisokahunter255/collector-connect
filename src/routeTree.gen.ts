@@ -16,7 +16,9 @@ import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminBranchesRouteImport } from './routes/admin/branches'
 import { Route as AdminCollectorsRouteImport } from './routes/admin/collectors'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminDepositsRouteImport } from './routes/admin/deposits'
 import { Route as AdminNewUserRouteImport } from './routes/admin/new-user'
+import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -53,9 +55,19 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminDepositsRoute = AdminDepositsRouteImport.update({
+  id: '/deposits',
+  path: '/deposits',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminNewUserRoute = AdminNewUserRouteImport.update({
   id: '/new-user',
   path: '/new-user',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -67,7 +79,9 @@ export interface FileRoutesByFullPath {
   '/admin/branches': typeof AdminBranchesRoute
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/deposits': typeof AdminDepositsRoute
   '/admin/new-user': typeof AdminNewUserRoute
+  '/admin/reports': typeof AdminReportsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,7 +91,9 @@ export interface FileRoutesByTo {
   '/admin/branches': typeof AdminBranchesRoute
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/deposits': typeof AdminDepositsRoute
   '/admin/new-user': typeof AdminNewUserRoute
+  '/admin/reports': typeof AdminReportsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,7 +104,9 @@ export interface FileRoutesById {
   '/admin/branches': typeof AdminBranchesRoute
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/deposits': typeof AdminDepositsRoute
   '/admin/new-user': typeof AdminNewUserRoute
+  '/admin/reports': typeof AdminReportsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,7 +118,9 @@ export interface FileRouteTypes {
     | '/admin/branches'
     | '/admin/collectors'
     | '/admin/dashboard'
+    | '/admin/deposits'
     | '/admin/new-user'
+    | '/admin/reports'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -110,7 +130,9 @@ export interface FileRouteTypes {
     | '/admin/branches'
     | '/admin/collectors'
     | '/admin/dashboard'
+    | '/admin/deposits'
     | '/admin/new-user'
+    | '/admin/reports'
   id:
     | '__root__'
     | '/'
@@ -120,7 +142,9 @@ export interface FileRouteTypes {
     | '/admin/branches'
     | '/admin/collectors'
     | '/admin/dashboard'
+    | '/admin/deposits'
     | '/admin/new-user'
+    | '/admin/reports'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -180,11 +204,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/deposits': {
+      id: '/admin/deposits'
+      path: '/deposits'
+      fullPath: '/admin/deposits'
+      preLoaderRoute: typeof AdminDepositsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/new-user': {
       id: '/admin/new-user'
       path: '/new-user'
       fullPath: '/admin/new-user'
       preLoaderRoute: typeof AdminNewUserRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
   }
@@ -195,7 +233,9 @@ interface AdminRouteRouteChildren {
   AdminBranchesRoute: typeof AdminBranchesRoute
   AdminCollectorsRoute: typeof AdminCollectorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminDepositsRoute: typeof AdminDepositsRoute
   AdminNewUserRoute: typeof AdminNewUserRoute
+  AdminReportsRoute: typeof AdminReportsRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -203,7 +243,9 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminBranchesRoute: AdminBranchesRoute,
   AdminCollectorsRoute: AdminCollectorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminDepositsRoute: AdminDepositsRoute,
   AdminNewUserRoute: AdminNewUserRoute,
+  AdminReportsRoute: AdminReportsRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
