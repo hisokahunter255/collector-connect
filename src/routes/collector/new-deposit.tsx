@@ -107,15 +107,36 @@ function NewDepositPage() {
       <div>
         <h1 className="text-xl font-bold">إضافة توريد جديد</h1>
         <p className="text-sm text-muted-foreground">
-          التاريخ والوقت والفرع والمنطقة تُسجل تلقائيًا من حسابك.
+          {multiArea
+            ? "التاريخ والوقت والفرع تُسجل تلقائيًا، واختر المنطقة التي تورّد عنها."
+            : "التاريخ والوقت والفرع والمنطقة تُسجل تلقائيًا من حسابك."}
         </p>
       </div>
 
       <div className="card-elevated space-y-2 p-4 text-sm">
         <Row label="اسم المحصل" value={profile?.full_name ?? "-"} />
         <Row label="الفرع" value={profile?.branch_name ?? "-"} />
-        <Row label="المنطقة" value={profile?.area_name ?? "-"} />
+        {multiArea ? (
+          <div className="space-y-2 rounded-lg bg-secondary/60 px-3 py-2">
+            <Label htmlFor="area">المنطقة</Label>
+            <Select value={selectedArea} onValueChange={setAreaId}>
+              <SelectTrigger id="area" className="h-11 bg-background">
+                <SelectValue placeholder="اختر المنطقة" />
+              </SelectTrigger>
+              <SelectContent>
+                {myAreas.map((a) => (
+                  <SelectItem key={a.id} value={a.id}>
+                    {a.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        ) : (
+          <Row label="المنطقة" value={profile?.area_name ?? myAreas[0]?.name ?? "-"} />
+        )}
       </div>
+
 
       <form
         className="card-elevated space-y-4 p-4"
