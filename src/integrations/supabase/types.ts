@@ -73,6 +73,44 @@ export type Database = {
         }
         Relationships: []
       }
+      branch_targets: {
+        Row: {
+          branch_id: string
+          created_at: string
+          id: string
+          month: string
+          notes: string | null
+          target_amount: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          id?: string
+          month: string
+          notes?: string | null
+          target_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          id?: string
+          month?: string
+          notes?: string | null
+          target_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "branch_targets_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       branches: {
         Row: {
           active: boolean
