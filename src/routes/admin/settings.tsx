@@ -2,9 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { ImageOff, Loader2, Settings2, Trash2 } from "lucide-react";
+import { Download, Eraser, ImageOff, Loader2, Settings2, Trash2 } from "lucide-react";
 
-import { deleteReviewedReceiptImages, updateMyCredentials } from "@/lib/account.functions";
+import {
+  deleteReviewedReceiptImages,
+  exportBackup,
+  resetOperationalData,
+  updateMyCredentials,
+} from "@/lib/account.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
