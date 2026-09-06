@@ -105,6 +105,7 @@ function DepositsPage() {
   });
 
   const stats = summarize(rows ?? []);
+  const [confirmAll, setConfirmAll] = useState(false);
 
   const review = useMutation({
     mutationFn: async (p: { row: DepositRow; status: "approved" | "rejected"; note: string }) => {
