@@ -82,14 +82,18 @@ function NewUserPage() {
           full_name: fullName,
           username,
           password,
-          branch_id: branchId,
-          area_id: areaId,
+          role,
+          branch_id: branchId || null,
+          area_id: areaId || null,
           phone: phone || null,
           active,
+          can_manage_collectors: isSupervisor ? canCollectors : false,
+          can_review_deposits: isSupervisor ? canDeposits : false,
+          can_manage_collections: isSupervisor ? canCollections : false,
         },
       }),
     onSuccess: () => {
-      toast.success("تم إنشاء حساب المحصل بنجاح");
+      toast.success(isSupervisor ? "تم إنشاء حساب المشرف بنجاح" : "تم إنشاء حساب المحصل بنجاح");
       queryClient.invalidateQueries();
       navigate({ to: "/admin/collectors" });
     },
@@ -98,8 +102,12 @@ function NewUserPage() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fullName || !username || !password || !branchId || !areaId) {
+    if (!fullName || !username || !password) {
       toast.error("أكمل جميع الحقول المطلوبة");
+      return;
+    }
+    if (!isSupervisor && (!branchId || !areaId)) {
+      toast.error("اختر الفرع والمنطقة للمحصل");
       return;
     }
     mutation.mutate();
@@ -110,8 +118,79 @@ function NewUserPage() {
       <div>
         <h1 className="text-xl font-bold">إنشاء مستخدم جديد</h1>
         <p className="text-sm text-muted-foreground">
-          كل محصل يرتبط بفرع ومنطقة، ولن يرى غير بياناته الخاصة.
+          المحصل يرتبط بفرع ومنطقة ولا يرى غير بياناته، والمشرف يطّلع على كل البيانات بالصلاحيات
+          التي تحددها له.
         </p>
+      </div>
+
+      <div className="card-elevated space-y-3 p-5">
+        <Label>نوع الحساب</Label>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(
+            [
+              { value: "collector", title: "محصل", note: "يورّد من الهاتف ويرى بياناته فقط" },
+              { value: "supervisor", title: "مشرف", note: "يطّلع على البيانات بصلاحيات محددة" },
+            ] as const
+          ).map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setRole(opt.value)}
+              className={`rounded-xl border p-3 text-start transition-colors ${
+                role === opt.value
+                  ? "border-primary bg-primary/10"
+                  : "border-border hover:bg-secondary"
+              }`}
+            >
+              <p className="text-sm font-semibold">{opt.title}</p>
+              <p className="text-xs text-muted-foreground">{opt.note}</p>
+            </button>
+          ))}
+        </div>
+
+        {isSupervisor && (
+          <div className="space-y-2 pt-2">
+            <p className="text-sm font-semibold">صلاحيات المشرف</p>
+            {(
+              [
+                {
+                  label: "إضافة محصلين",
+                  note: "إنشاء حسابات محصلين جديدة",
+                  value: canCollectors,
+                  set: setCanCollectors,
+                },
+                {
+                  label: "مراجعة التوريدات والموافقة",
+                  note: "اعتماد أو رفض التوريدات وكتابة الملاحظات",
+                  value: canDeposits,
+                  set: setCanDeposits,
+                },
+                {
+                  label: "إدارة التحصيل والدورات",
+                  note: "إضافة دورات وإدخال بيانات التحصيل",
+                  value: canCollections,
+                  set: setCanCollections,
+                },
+              ] as const
+            ).map((perm) => (
+              <div
+                key={perm.label}
+                className="flex items-center justify-between rounded-xl bg-secondary/60 p-3"
+              >
+                <div>
+                  <p className="text-sm font-semibold">{perm.label}</p>
+                  <p className="text-xs text-muted-foreground">{perm.note}</p>
+                </div>
+                <Switch checked={perm.value} onCheckedChange={perm.set} />
+              </div>
+            ))}
+            {!canCollectors && !canDeposits && !canCollections && (
+              <p className="rounded-xl bg-secondary/40 p-3 text-xs text-muted-foreground">
+                بدون تحديد أي صلاحية سيكون الحساب للاطلاع فقط.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <form onSubmit={submit} className="card-elevated space-y-4 p-5">
