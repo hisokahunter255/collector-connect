@@ -110,6 +110,21 @@ function DepositsPage() {
 
   const stats = summarize(rows ?? []);
   const [confirmAll, setConfirmAll] = useState(false);
+  const removeDeposit = useServerFn(deleteDeposit);
+  const [toDelete, setToDelete] = useState<DepositRow | null>(null);
+
+  const destroy = useMutation({
+    mutationFn: async (row: DepositRow) => {
+      await removeDeposit({ data: { id: row.id } });
+    },
+    onSuccess: () => {
+      toast.success("تم حذف التوريد، يمكن للمحصل رفعه من جديد");
+      setToDelete(null);
+      queryClient.invalidateQueries({ queryKey: ["deposits"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "تعذر حذف التوريد"),
+  });
 
   const review = useMutation({
     mutationFn: async (p: { row: DepositRow; status: "approved" | "rejected"; note: string }) => {
