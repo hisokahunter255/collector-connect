@@ -12,13 +12,17 @@ const usernameSchema = z
   .regex(/^[a-zA-Z0-9._-]+$/, "اسم المستخدم يجب أن يكون بحروف إنجليزية أو أرقام");
 
 const createSchema = z.object({
-  full_name: z.string().min(3, "اسم المحصل مطلوب"),
+  full_name: z.string().min(3, "الاسم مطلوب"),
   username: usernameSchema,
   password: z.string().min(6, "كلمة المرور 6 أحرف على الأقل"),
-  branch_id: z.string().uuid("اختر الفرع"),
-  area_id: z.string().uuid("اختر المنطقة"),
+  role: z.enum(["collector", "supervisor"]).default("collector"),
+  branch_id: z.string().uuid("اختر الفرع").optional().nullable(),
+  area_id: z.string().uuid("اختر المنطقة").optional().nullable(),
   phone: z.string().optional().nullable(),
   active: z.boolean().default(true),
+  can_manage_collectors: z.boolean().default(false),
+  can_review_deposits: z.boolean().default(false),
+  can_manage_collections: z.boolean().default(false),
 });
 
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -29,6 +33,24 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
     .eq("role", "admin")
     .maybeSingle();
   if (error || !data) throw new Error("غير مصرح لك بهذه العملية");
+}
+
+/** Admins can do everything; supervisors only when granted the permission. */
+async function assertCanManageCollectors(context: { supabase: any; userId: string }) {
+  const { data: roles } = await context.supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId);
+  const list = ((roles ?? []) as { role: string }[]).map((r) => r.role);
+  if (list.includes("admin")) return "admin" as const;
+  if (!list.includes("supervisor")) throw new Error("غير مصرح لك بهذه العملية");
+  const { data: perm } = await context.supabase
+    .from("supervisor_permissions")
+    .select("can_manage_collectors")
+    .eq("user_id", context.userId)
+    .maybeSingle();
+  if (!perm?.can_manage_collectors) throw new Error("غير مصرح لك بإضافة المحصلين");
+  return "supervisor" as const;
 }
 
 async function logAction(actorId: string, actorName: string, action: string, details: string) {
