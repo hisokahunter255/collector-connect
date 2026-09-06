@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { logAudit } from "@/lib/admin.functions";
+import { deleteCollectionCycle } from "@/lib/maintenance.functions";
 import { ARABIC_MONTHS, cycleName, displayCycleTotals, fetchCycleSummaries } from "@/lib/collections";
 import { formatMoney, formatNumber } from "@/lib/format";
 import { CycleStatusBadge } from "@/components/app/cycle-status-badge";
