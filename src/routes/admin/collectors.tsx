@@ -89,11 +89,11 @@ function CollectorsPage() {
       const [profiles, roles, deposits, links] = await Promise.all([
         supabase
           .from("profiles")
-          .select("id, full_name, username, phone, active, branch_id, area_id, branches(name), areas(name)")
+          .select("id, full_name, username, phone, active, branch_id, area_id, branches(name), areas!profiles_area_id_fkey(name)")
           .order("full_name"),
         supabase.from("user_roles").select("user_id, role"),
         supabase.from("deposits").select("collector_id, created_at").limit(5000),
-        supabase.from("profile_areas").select("user_id, area_id, areas(name)"),
+        supabase.from("profile_areas").select("user_id, area_id, areas!profile_areas_area_id_fkey(name)"),
       ]);
       const areaLinks = new Map<string, { id: string; name: string }[]>();
       for (const l of (links.data ?? []) as {
