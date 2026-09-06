@@ -35,7 +35,7 @@ function CollectorDashboard() {
 
   return (
     <div className="space-y-5">
-      <section className="card-elevated bg-gradient-brand p-5 text-primary-foreground">
+      <section className="card-elevated brand-gradient p-5 text-primary-foreground">
         <p className="text-sm opacity-90">أهلاً بك</p>
         <h1 className="mt-1 text-2xl font-bold">{profile?.full_name ?? "..."}</h1>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
