@@ -14,7 +14,6 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CollectorRouteRouteImport } from './routes/collector/route'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminBranchesRouteImport } from './routes/admin/branches'
-import { Route as AdminCollectionsRouteImport } from './routes/admin/collections'
 import { Route as AdminCollectorsRouteImport } from './routes/admin/collectors'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminDepositsRouteImport } from './routes/admin/deposits'
@@ -23,6 +22,7 @@ import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as CollectorDashboardRouteImport } from './routes/collector/dashboard'
 import { Route as CollectorMyDepositsRouteImport } from './routes/collector/my-deposits'
 import { Route as CollectorNewDepositRouteImport } from './routes/collector/new-deposit'
+import { Route as AdminCollectionsIndexRouteImport } from './routes/admin/collections/index'
 import { Route as AdminCollectionsCycleIdRouteImport } from './routes/admin/collections/$cycleId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -48,11 +48,6 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
 const AdminBranchesRoute = AdminBranchesRouteImport.update({
   id: '/branches',
   path: '/branches',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
-  id: '/collections',
-  path: '/collections',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminCollectorsRoute = AdminCollectorsRouteImport.update({
@@ -95,10 +90,15 @@ const CollectorNewDepositRoute = CollectorNewDepositRouteImport.update({
   path: '/new-deposit',
   getParentRoute: () => CollectorRouteRoute,
 } as any)
+const AdminCollectionsIndexRoute = AdminCollectionsIndexRouteImport.update({
+  id: '/collections/',
+  path: '/collections/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminCollectionsCycleIdRoute = AdminCollectionsCycleIdRouteImport.update({
-  id: '/$cycleId',
-  path: '/$cycleId',
-  getParentRoute: () => AdminCollectionsRoute,
+  id: '/collections/$cycleId',
+  path: '/collections/$cycleId',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -107,7 +107,6 @@ export interface FileRoutesByFullPath {
   '/collector': typeof CollectorRouteRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
-  '/admin/collections': typeof AdminCollectionsRouteWithChildren
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/deposits': typeof AdminDepositsRoute
@@ -117,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
   '/admin/collections/$cycleId': typeof AdminCollectionsCycleIdRoute
+  '/admin/collections/': typeof AdminCollectionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,7 +124,6 @@ export interface FileRoutesByTo {
   '/collector': typeof CollectorRouteRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
-  '/admin/collections': typeof AdminCollectionsRouteWithChildren
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/deposits': typeof AdminDepositsRoute
@@ -134,6 +133,7 @@ export interface FileRoutesByTo {
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
   '/admin/collections/$cycleId': typeof AdminCollectionsCycleIdRoute
+  '/admin/collections': typeof AdminCollectionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,7 +142,6 @@ export interface FileRoutesById {
   '/collector': typeof CollectorRouteRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
-  '/admin/collections': typeof AdminCollectionsRouteWithChildren
   '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/deposits': typeof AdminDepositsRoute
@@ -152,6 +151,7 @@ export interface FileRoutesById {
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
   '/admin/collections/$cycleId': typeof AdminCollectionsCycleIdRoute
+  '/admin/collections/': typeof AdminCollectionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,7 +161,6 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
-    | '/admin/collections'
     | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/deposits'
@@ -171,6 +170,7 @@ export interface FileRouteTypes {
     | '/collector/my-deposits'
     | '/collector/new-deposit'
     | '/admin/collections/$cycleId'
+    | '/admin/collections/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -178,7 +178,6 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
-    | '/admin/collections'
     | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/deposits'
@@ -188,6 +187,7 @@ export interface FileRouteTypes {
     | '/collector/my-deposits'
     | '/collector/new-deposit'
     | '/admin/collections/$cycleId'
+    | '/admin/collections'
   id:
     | '__root__'
     | '/'
@@ -195,7 +195,6 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
-    | '/admin/collections'
     | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/deposits'
@@ -205,6 +204,7 @@ export interface FileRouteTypes {
     | '/collector/my-deposits'
     | '/collector/new-deposit'
     | '/admin/collections/$cycleId'
+    | '/admin/collections/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -248,13 +248,6 @@ declare module '@tanstack/react-router' {
       path: '/branches'
       fullPath: '/admin/branches'
       preLoaderRoute: typeof AdminBranchesRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/collections': {
-      id: '/admin/collections'
-      path: '/collections'
-      fullPath: '/admin/collections'
-      preLoaderRoute: typeof AdminCollectionsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/collectors': {
@@ -313,47 +306,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectorNewDepositRouteImport
       parentRoute: typeof CollectorRouteRoute
     }
+    '/admin/collections/': {
+      id: '/admin/collections/'
+      path: '/collections'
+      fullPath: '/admin/collections/'
+      preLoaderRoute: typeof AdminCollectionsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/collections/$cycleId': {
       id: '/admin/collections/$cycleId'
-      path: '/$cycleId'
+      path: '/collections/$cycleId'
       fullPath: '/admin/collections/$cycleId'
       preLoaderRoute: typeof AdminCollectionsCycleIdRouteImport
-      parentRoute: typeof AdminCollectionsRoute
+      parentRoute: typeof AdminRouteRoute
     }
   }
 }
 
-interface AdminCollectionsRouteChildren {
-  AdminCollectionsCycleIdRoute: typeof AdminCollectionsCycleIdRoute
-}
-
-const AdminCollectionsRouteChildren: AdminCollectionsRouteChildren = {
-  AdminCollectionsCycleIdRoute: AdminCollectionsCycleIdRoute,
-}
-
-const AdminCollectionsRouteWithChildren =
-  AdminCollectionsRoute._addFileChildren(AdminCollectionsRouteChildren)
-
 interface AdminRouteRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminBranchesRoute: typeof AdminBranchesRoute
-  AdminCollectionsRoute: typeof AdminCollectionsRouteWithChildren
   AdminCollectorsRoute: typeof AdminCollectorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminDepositsRoute: typeof AdminDepositsRoute
   AdminNewUserRoute: typeof AdminNewUserRoute
   AdminReportsRoute: typeof AdminReportsRoute
+  AdminCollectionsCycleIdRoute: typeof AdminCollectionsCycleIdRoute
+  AdminCollectionsIndexRoute: typeof AdminCollectionsIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminBranchesRoute: AdminBranchesRoute,
-  AdminCollectionsRoute: AdminCollectionsRouteWithChildren,
   AdminCollectorsRoute: AdminCollectorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminDepositsRoute: AdminDepositsRoute,
   AdminNewUserRoute: AdminNewUserRoute,
   AdminReportsRoute: AdminReportsRoute,
+  AdminCollectionsCycleIdRoute: AdminCollectionsCycleIdRoute,
+  AdminCollectionsIndexRoute: AdminCollectionsIndexRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
