@@ -196,6 +196,23 @@ function CollectionsPage() {
           {!allRows.length?<tr><td colSpan={9} className="p-10 text-center text-muted-foreground">لا توجد دورات تطابق الفلاتر</td></tr>:null}
         </tbody></table></div>}
       </section>
+
+      <Dialog open={!!toDelete} onOpenChange={(o)=>{if(!o)setToDelete(null)}}>
+        <DialogContent dir="rtl" className="max-w-md">
+          <DialogHeader className="text-right">
+            <DialogTitle>حذف الدورة المنتهية؟</DialogTitle>
+            <DialogDescription>
+              سيتم حذف دورة {toDelete?.name} وكل عمليات التحصيل والإيرادات الأخرى التابعة لها نهائيًا، ولا يمكن استعادتها.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Button variant="destructive" className="flex-1" disabled={deleteCycle.isPending} onClick={()=>toDelete&&deleteCycle.mutate(toDelete.id)}>
+              {deleteCycle.isPending?<Loader2 className="size-4 animate-spin"/>:<Trash2 className="size-4"/>} تأكيد الحذف
+            </Button>
+            <Button variant="secondary" className="flex-1" onClick={()=>setToDelete(null)}>إلغاء</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
