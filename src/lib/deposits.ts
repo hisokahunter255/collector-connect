@@ -24,14 +24,14 @@ const SELECT =
   "id, ref, collector_id, branch_id, area_id, invoices_count, amount, receipt_image_url, notes, status, admin_notes, created_at, reviewed_at, profiles!deposits_collector_profile_fkey(full_name, username), branches(name), areas(name)";
 
 export type DepositFilters = {
-  collectorId?: string;
-  branchId?: string;
-  areaId?: string;
-  status?: string;
-  from?: string;
-  to?: string;
-  search?: string;
-  limit?: number;
+  collectorId?: string | undefined;
+  branchId?: string | undefined;
+  areaId?: string | undefined;
+  status?: string | undefined;
+  from?: string | undefined;
+  to?: string | undefined;
+  search?: string | undefined;
+  limit?: number | undefined;
 };
 
 function mapRow(row: Record<string, unknown>): DepositRow {
