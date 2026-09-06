@@ -142,7 +142,7 @@ export type Database = {
           closed_by: string | null
           collector_id: string | null
           created_at: string
-          created_by: string
+          created_by: string | null
           final_billing_target_amount: number | null
           final_collection_percentage: number | null
           final_grand_total: number | null
@@ -165,7 +165,7 @@ export type Database = {
           closed_by?: string | null
           collector_id?: string | null
           created_at?: string
-          created_by: string
+          created_by?: string | null
           final_billing_target_amount?: number | null
           final_collection_percentage?: number | null
           final_grand_total?: number | null
@@ -188,7 +188,7 @@ export type Database = {
           closed_by?: string | null
           collector_id?: string | null
           created_at?: string
-          created_by?: string
+          created_by?: string | null
           final_billing_target_amount?: number | null
           final_collection_percentage?: number | null
           final_grand_total?: number | null
@@ -244,7 +244,7 @@ export type Database = {
         Row: {
           collector_id: string | null
           created_at: string
-          created_by: string
+          created_by: string | null
           cycle_id: string
           entry_date: string
           id: string
@@ -256,7 +256,7 @@ export type Database = {
         Insert: {
           collector_id?: string | null
           created_at?: string
-          created_by: string
+          created_by?: string | null
           cycle_id: string
           entry_date?: string
           id?: string
@@ -268,7 +268,7 @@ export type Database = {
         Update: {
           collector_id?: string | null
           created_at?: string
-          created_by?: string
+          created_by?: string | null
           cycle_id?: string
           entry_date?: string
           id?: string
