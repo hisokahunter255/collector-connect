@@ -25,27 +25,36 @@ export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
     const state = await fetchAuthState();
     if (!state) throw redirect({ to: "/" });
-    if (state.role !== "admin") throw redirect({ to: "/collector/dashboard" });
+    if (!state.isStaff) throw redirect({ to: "/collector/dashboard" });
     return { auth: state };
   },
   component: AdminLayout,
 });
 
 const NAV = [
-  { to: "/admin/dashboard", label: "الرئيسية", icon: LayoutDashboard },
-  { to: "/admin/collectors", label: "المحصلون", icon: Users },
-  { to: "/admin/new-user", label: "إنشاء مستخدم", icon: UserPlus },
-  { to: "/admin/deposits", label: "التوريدات", icon: ClipboardList },
-  { to: "/admin/collections", label: "التحصيل ونسب التحصيل", icon: Gauge },
-  { to: "/admin/branches", label: "الفروع والمناطق", icon: Building2 },
-  { to: "/admin/reports", label: "التقارير", icon: BarChart3 },
-  { to: "/admin/audit", label: "سجل العمليات", icon: BadgeCheck },
+  { to: "/admin/dashboard", label: "الرئيسية", icon: LayoutDashboard, need: null },
+  { to: "/admin/collectors", label: "المحصلون", icon: Users, need: null },
+  { to: "/admin/new-user", label: "إنشاء مستخدم", icon: UserPlus, need: "collectors" },
+  { to: "/admin/deposits", label: "التوريدات", icon: ClipboardList, need: null },
+  {
+    to: "/admin/collections",
+    label: "التحصيل ونسب التحصيل ( الشاشة )",
+    icon: Gauge,
+    need: null,
+  },
+  { to: "/admin/branches", label: "الفروع والمناطق", icon: Building2, need: null },
+  { to: "/admin/reports", label: "التقارير", icon: BarChart3, need: null },
+  { to: "/admin/audit", label: "سجل العمليات", icon: BadgeCheck, need: null },
 ] as const;
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const { data: auth } = useAuth();
+  const items = NAV.filter(
+    (item) => !item.need || auth?.permissions[item.need as "collectors"] !== false,
+  );
   return (
     <nav className="space-y-1">
-      {NAV.map((item) => (
+      {items.map((item) => (
         <Link
           key={item.to}
           to={item.to}
