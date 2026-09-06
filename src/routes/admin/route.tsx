@@ -100,7 +100,9 @@ function AdminLayout() {
         <div className="mt-auto space-y-3 pt-4">
           <div className="rounded-xl bg-secondary p-3 text-xs">
             <p className="font-semibold">{auth?.profile?.full_name ?? "مدير النظام"}</p>
-            <p className="text-muted-foreground">مدير النظام</p>
+            <p className="text-muted-foreground">
+              {auth?.role === "supervisor" ? "مشرف" : "مدير النظام"}
+            </p>
           </div>
           <Button variant="outline" className="w-full" onClick={signOut}>
             <LogOut className="size-4" /> تسجيل الخروج
