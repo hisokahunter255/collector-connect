@@ -334,6 +334,37 @@ function SettingsPage() {
         </section>
       ) : null}
 
+      <AlertDialog
+        open={restoreOpen}
+        onOpenChange={(open) => {
+          setRestoreOpen(open);
+          if (!open) setRestoreFile(null);
+        }}
+      >
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader className="text-right sm:text-right">
+            <AlertDialogTitle>استعادة النسخة الاحتياطية؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              سيتم استبدال التوريدات ودورات التحصيل والفروع والمناطق والربط وسجل العمليات الحالية ببيانات الملف
+              {restoreFile ? ` «${restoreFile.name}»` : ""}. صور الإيصالات لا تُستعاد.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel disabled={restoring}>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={restoring || !restoreFile}
+              onClick={(event) => {
+                event.preventDefault();
+                void confirmRestore();
+              }}
+            >
+              {restoring ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+              تأكيد الاستعادة
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
         <AlertDialogContent dir="rtl">
           <AlertDialogHeader className="text-right sm:text-right">
