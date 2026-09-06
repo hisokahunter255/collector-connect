@@ -418,7 +418,9 @@ function CollectorsPage() {
                   <Label>الفرع</Label>
                   <Select
                     value={editing.branch_id ?? ""}
-                    onValueChange={(v) => setEditing({ ...editing, branch_id: v, area_id: null })}
+                    onValueChange={(v) =>
+                      setEditing({ ...editing, branch_id: v, area_id: null, area_ids: [] })
+                    }
                   >
                     <SelectTrigger className="h-11">
                       <SelectValue placeholder="اختر الفرع" />
@@ -433,10 +435,16 @@ function CollectorsPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>المنطقة</Label>
+                  <Label>المنطقة الأساسية</Label>
                   <Select
                     value={editing.area_id ?? ""}
-                    onValueChange={(v) => setEditing({ ...editing, area_id: v })}
+                    onValueChange={(v) =>
+                      setEditing({
+                        ...editing,
+                        area_id: v,
+                        area_ids: editing.area_ids.filter((x) => x !== v),
+                      })
+                    }
                     disabled={!editing.branch_id}
                   >
                     <SelectTrigger className="h-11">
@@ -452,6 +460,38 @@ function CollectorsPage() {
                   </Select>
                 </div>
               </div>
+              {(areas ?? []).length > 1 ? (
+                <div className="space-y-2 rounded-xl bg-secondary/60 p-3">
+                  <p className="text-sm font-semibold">مناطق إضافية</p>
+                  <p className="text-xs text-muted-foreground">
+                    كل المناطق المختارة يمكن للمحصل التوريد عنها.
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {(areas ?? [])
+                      .filter((a) => a.id !== editing.area_id)
+                      .map((a) => (
+                        <label
+                          key={a.id}
+                          className="flex items-center justify-between rounded-lg bg-background px-3 py-2 text-sm"
+                        >
+                          <span>{a.name}</span>
+                          <Switch
+                            checked={editing.area_ids.includes(a.id)}
+                            onCheckedChange={(v) =>
+                              setEditing({
+                                ...editing,
+                                area_ids: v
+                                  ? [...editing.area_ids, a.id]
+                                  : editing.area_ids.filter((x) => x !== a.id),
+                              })
+                            }
+                          />
+                        </label>
+                      ))}
+                  </div>
+                </div>
+              ) : null}
+
               <div className="flex items-center justify-between rounded-xl bg-secondary/60 p-3">
                 <span className="text-sm font-semibold">
                   {editing.active ? "الحساب نشط" : "الحساب موقوف"}
