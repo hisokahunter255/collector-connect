@@ -79,6 +79,14 @@ export async function fetchAuthState(): Promise<AuthState | null> {
     };
   }
 
+  const assignedAreas = ((areasRes.data ?? []) as {
+    area_id: string;
+    areas?: { name: string } | null;
+  }[]).map((r) => ({ id: r.area_id, name: r.areas?.name ?? "" }));
+  if (p?.['area_id'] && !assignedAreas.some((a) => a.id === p['area_id'])) {
+    assignedAreas.unshift({ id: p['area_id'] as string, name: p.areas?.name ?? "" });
+  }
+
   return {
     userId: user.id,
     role,
