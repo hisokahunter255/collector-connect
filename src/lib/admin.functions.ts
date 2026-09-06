@@ -104,8 +104,8 @@ export const createCollector = createServerFn({ method: "POST" })
       id: newUserId,
       full_name: data.full_name,
       username: data.username.toLowerCase(),
-      branch_id: data.branch_id,
-      area_id: data.area_id,
+      branch_id: data.branch_id ?? null,
+      area_id: data.area_id ?? null,
       phone: data.phone || null,
       active: data.active,
     });
@@ -113,13 +113,22 @@ export const createCollector = createServerFn({ method: "POST" })
       await supabaseAdmin.auth.admin.deleteUser(newUserId);
       throw new Error(profileError.message);
     }
-    await supabaseAdmin.from("user_roles").insert({ user_id: newUserId, role: "collector" });
+    await supabaseAdmin.from("user_roles").insert({ user_id: newUserId, role: data.role });
+
+    if (data.role === "supervisor") {
+      await supabaseAdmin.from("supervisor_permissions").insert({
+        user_id: newUserId,
+        can_manage_collectors: data.can_manage_collectors,
+        can_review_deposits: data.can_review_deposits,
+        can_manage_collections: data.can_manage_collections,
+      });
+    }
 
     await logAction(
       (context as never as { userId: string }).userId,
       await actorName(context as never),
-      "إنشاء محصل",
-      `تم إنشاء حساب المحصل ${data.full_name} (${data.username})`,
+      data.role === "supervisor" ? "إنشاء مشرف" : "إنشاء محصل",
+      `تم إنشاء حساب ${data.role === "supervisor" ? "المشرف" : "المحصل"} ${data.full_name} (${data.username})`,
     );
 
     return { id: newUserId };
