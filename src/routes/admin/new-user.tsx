@@ -232,7 +232,7 @@ function NewUserPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>الفرع</Label>
+            <Label>الفرع {isSupervisor ? "(اختياري)" : ""}</Label>
             <Select
               value={branchId}
               onValueChange={(v) => {
@@ -254,7 +254,7 @@ function NewUserPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>المنطقة</Label>
+            <Label>المنطقة {isSupervisor ? "(اختياري)" : ""}</Label>
             <Select value={areaId} onValueChange={setAreaId} disabled={!branchId}>
               <SelectTrigger className="h-11">
                 <SelectValue placeholder={branchId ? "اختر المنطقة" : "اختر الفرع أولًا"} />
