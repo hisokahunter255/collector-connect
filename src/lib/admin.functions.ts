@@ -173,3 +173,38 @@ export const logAudit = createServerFn({ method: "POST" })
     await logAction(ctx.userId, await actorName(context as never), data.action, data.details);
     return { ok: true };
   });
+
+export const deleteCollector = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ user_id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context as never);
+    const ctx = context as never as { userId: string };
+    if (ctx.userId === data.user_id) throw new Error("لا يمكن حذف حسابك الحالي");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: p } = await supabaseAdmin
+      .from("profiles")
+      .select("full_name, username")
+      .eq("id", data.user_id)
+      .maybeSingle();
+
+    const { data: roles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user_id);
+    if (((roles ?? []) as { role: string }[]).some((r) => r.role === "admin")) {
+      throw new Error("لا يمكن حذف حساب مدير النظام");
+    }
+
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.user_id);
+    if (error) throw new Error(error.message);
+
+    await logAction(
+      ctx.userId,
+      await actorName(context as never),
+      "حذف حساب",
+      `تم حذف الحساب ${p?.full_name ?? data.user_id}${p?.username ? ` (${p.username})` : ""} وكل بياناته`,
+    );
+    return { ok: true };
+  });

@@ -3,10 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { KeyRound, ListChecks, Pencil, Search, Users } from "lucide-react";
+import { KeyRound, ListChecks, Pencil, Search, Trash2, Users } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { logAudit, setCollectorPassword } from "@/lib/admin.functions";
+import { deleteCollector, logAudit, setCollectorPassword } from "@/lib/admin.functions";
+import { useAuth } from "@/hooks/use-auth";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Select,
   SelectContent,
@@ -60,11 +71,15 @@ function CollectorsPage() {
   const navigate = useNavigate();
   const audit = useServerFn(logAudit);
   const changePassword = useServerFn(setCollectorPassword);
+  const removeUser = useServerFn(deleteCollector);
+  const { data: auth } = useAuth();
+  const isAdmin = auth?.role === "admin";
 
   const [term, setTerm] = useState("");
   const [editing, setEditing] = useState<CollectorRow | null>(null);
   const [pwdFor, setPwdFor] = useState<CollectorRow | null>(null);
   const [newPassword, setNewPassword] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<CollectorRow | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["collectors"],
@@ -199,6 +214,18 @@ function CollectorsPage() {
     onError: (e: Error) => toast.error(e.message || "تعذر تغيير كلمة المرور"),
   });
 
+  const removeCollector = useMutation({
+    mutationFn: async (row: CollectorRow) => {
+      await removeUser({ data: { user_id: row.id } });
+    },
+    onSuccess: () => {
+      toast.success("تم حذف الحساب نهائيًا");
+      setDeleteTarget(null);
+      queryClient.invalidateQueries({ queryKey: ["collectors"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "تعذر حذف الحساب"),
+  });
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -296,6 +323,15 @@ function CollectorsPage() {
                       >
                         {row.active ? "إيقاف" : "تفعيل"}
                       </Button>
+                      {isAdmin ? (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 className="size-3.5" /> حذف
+                        </Button>
+                      ) : null}
                     </div>
                   </td>
                 </tr>
@@ -431,6 +467,31 @@ function CollectorsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>حذف الحساب نهائيًا؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              سيتم حذف {deleteTarget?.full_name} وكل توريداته وبياناته المرتبطة، ولا يمكن التراجع عن
+              هذه الخطوة. إن أردت منع الدخول فقط استخدم زر «إيقاف».
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={removeCollector.isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                if (deleteTarget) removeCollector.mutate(deleteTarget);
+              }}
+            >
+              حذف نهائي
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
