@@ -406,7 +406,7 @@ function DepositsPage() {
                 />
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className={`flex flex-wrap gap-2 ${canReview ? "" : "hidden"}`}>
                 <Button
                   className="flex-1"
                   disabled={review.isPending}
@@ -431,6 +431,11 @@ function DepositsPage() {
                   <XCircle className="size-4" /> يوجد خطأ
                 </Button>
               </div>
+              {!canReview && (
+                <p className="rounded-xl bg-secondary/60 p-3 text-xs text-muted-foreground">
+                  حسابك للاطلاع فقط على التوريدات.
+                </p>
+              )}
             </div>
           ) : null}
         </DialogContent>
