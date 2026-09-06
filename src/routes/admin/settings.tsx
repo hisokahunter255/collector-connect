@@ -62,7 +62,10 @@ function SettingsPage() {
     setBackingUp(true);
     try {
       const snapshot = await runBackup({});
-      const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
+      const blob = new Blob(
+        [JSON.stringify({ createdAt: snapshot.createdAt, tables: JSON.parse(snapshot.json) }, null, 2)],
+        { type: "application/json" },
+      );
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;

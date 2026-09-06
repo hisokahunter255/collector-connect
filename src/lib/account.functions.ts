@@ -186,10 +186,10 @@ export const exportBackup = createServerFn({ method: "POST" })
     for (const table of BACKUP_TABLES) {
       const { data, error } = await supabaseAdmin.from(table).select("*");
       if (error) throw new Error(`تعذر تصدير جدول ${table}`);
-      tables[table] = data ?? [];
+      tables[table] = (data ?? []) as unknown[];
     }
 
-    return { createdAt: new Date().toISOString(), tables };
+    return { createdAt: new Date().toISOString(), json: JSON.stringify(tables) };
   });
 
 const resetSchema = z.object({
@@ -209,7 +209,7 @@ export const resetOperationalData = createServerFn({ method: "POST" })
 
     const wipe = async (table: string) => {
       const { error } = await supabaseAdmin
-        .from(table)
+        .from(table as "deposits")
         .delete()
         .not("id", "is", null);
       if (error) throw new Error(`تعذر مسح جدول ${table}`);
