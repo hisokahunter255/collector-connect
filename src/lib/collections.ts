@@ -13,14 +13,14 @@ export type CollectionEntry = Tables<"collection_entries"> & {
 };
 export type OtherRevenueItem = Tables<"other_revenue_items">;
 export type CollectionFilters = {
-  year?: number;
-  month?: number;
-  branchId?: string;
-  areaId?: string;
-  collectorId?: string;
-  cycleId?: string;
-  from?: string;
-  to?: string;
+  year?: number | undefined;
+  month?: number | undefined;
+  branchId?: string | undefined;
+  areaId?: string | undefined;
+  collectorId?: string | undefined;
+  cycleId?: string | undefined;
+  from?: string | undefined;
+  to?: string | undefined;
 };
 
 export function cycleName(month: number | null, year: number | null) {
