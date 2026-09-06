@@ -134,6 +134,34 @@ function DepositsPage() {
     onError: () => toast.error("تعذر تحديث حالة المراجعة"),
   });
 
+  const pendingRows = (rows ?? []).filter((r) => r.status === "pending");
+
+  const reviewAll = useMutation({
+    mutationFn: async () => {
+      const ids = pendingRows.map((r) => r.id);
+      if (ids.length === 0) return 0;
+      const { error } = await supabase
+        .from("deposits")
+        .update({ status: "approved", reviewed_at: new Date().toISOString() })
+        .in("id", ids);
+      if (error) throw error;
+      await audit({
+        data: {
+          action: "مراجعة كل التوريدات",
+          details: `تمت مراجعة ${ids.length} عملية دفعة واحدة`,
+        },
+      });
+      return ids.length;
+    },
+    onSuccess: (count) => {
+      toast.success(`تمت مراجعة ${formatNumber(Number(count))} عملية`);
+      setConfirmAll(false);
+      queryClient.invalidateQueries({ queryKey: ["deposits"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+    },
+    onError: () => toast.error("تعذر تنفيذ المراجعة الجماعية"),
+  });
+
   const areaOptions = (options?.areas ?? []).filter(
     (a) => branchId === ALL || a.branch_id === branchId,
   );
