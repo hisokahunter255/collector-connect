@@ -41,6 +41,7 @@ function NewUserPage() {
   const [password, setPassword] = useState("");
   const [branchId, setBranchId] = useState("");
   const [areaId, setAreaId] = useState("");
+  const [extraAreas, setExtraAreas] = useState<string[]>([]);
   const [phone, setPhone] = useState("");
   const [active, setActive] = useState(true);
   const [role, setRole] = useState<"collector" | "supervisor">("collector");
