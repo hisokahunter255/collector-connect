@@ -85,6 +85,7 @@ function NewUserPage() {
           role,
           branch_id: branchId || null,
           area_id: areaId || null,
+          area_ids: extraAreas,
           phone: phone || null,
           active,
           can_manage_collectors: isSupervisor ? canCollectors : false,
