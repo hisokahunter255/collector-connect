@@ -43,6 +43,11 @@ function NewDepositPage() {
   const [invoices, setInvoices] = useState("");
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
+  const [areaId, setAreaId] = useState("");
+
+  const myAreas = profile?.areas ?? [];
+  const multiArea = myAreas.length > 1;
+  const selectedArea = areaId || profile?.area_id || myAreas[0]?.id || "";
 
   async function pickFile(input: File | null) {
     if (!input) return;
