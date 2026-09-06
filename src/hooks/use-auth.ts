@@ -40,7 +40,6 @@ export async function fetchAuthState(): Promise<AuthState | null> {
   const user = data.user;
   if (!user) return null;
 
-  const [profileRes, rolesRes] = await Promise.all([
   const [profileRes, rolesRes, areasRes] = await Promise.all([
     supabase
       .from("profiles")
