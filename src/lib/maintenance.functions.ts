@@ -36,16 +36,12 @@ export const deleteDeposit = createServerFn({ method: "POST" })
     await requireAdmin(supabase, userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: row, error } = await supabaseAdmin
+    const { data: target, error: findError } = await supabaseAdmin
       .from("deposits")
-      .select("id, ref, receipt_image_url, collector_id, profiles:collector_profile_fkey(full_name)")
+      .select("id, ref, receipt_image_url")
       .eq("id", data.id)
       .maybeSingle();
-    const { data: fallback } = row
-      ? { data: null }
-      : await supabaseAdmin.from("deposits").select("id, ref, receipt_image_url").eq("id", data.id).maybeSingle();
-    const target = (row ?? fallback) as { id: string; ref: number; receipt_image_url: string } | null;
-    if (error && !target) throw new Error("تعذر العثور على التوريد");
+    if (findError) throw new Error("تعذر العثور على التوريد");
     if (!target) throw new Error("التوريد غير موجود");
 
     if (target.receipt_image_url) {
