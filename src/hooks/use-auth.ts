@@ -8,9 +8,19 @@ export function usernameToEmail(username: string) {
   return `${username.trim().toLowerCase()}@${EMAIL_DOMAIN}`;
 }
 
+export type AppRole = "admin" | "supervisor" | "collector";
+
+export type StaffPermissions = {
+  collectors: boolean;
+  deposits: boolean;
+  collections: boolean;
+};
+
 export type AuthState = {
   userId: string;
-  role: "admin" | "collector";
+  role: AppRole;
+  isStaff: boolean;
+  permissions: StaffPermissions;
   profile: {
     id: string;
     full_name: string;
@@ -39,14 +49,38 @@ export async function fetchAuthState(): Promise<AuthState | null> {
   ]);
 
   const roles = (rolesRes.data ?? []).map((r) => r.role as string);
-  const role: "admin" | "collector" = roles.includes("admin") ? "admin" : "collector";
+  const role: AppRole = roles.includes("admin")
+    ? "admin"
+    : roles.includes("supervisor")
+      ? "supervisor"
+      : "collector";
   const p = profileRes.data as
     | (Record<string, unknown> & { branches?: { name: string } | null; areas?: { name: string } | null })
     | null;
 
+  let permissions: StaffPermissions =
+    role === "admin"
+      ? { collectors: true, deposits: true, collections: true }
+      : { collectors: false, deposits: false, collections: false };
+
+  if (role === "supervisor") {
+    const { data: perm } = await supabase
+      .from("supervisor_permissions")
+      .select("can_manage_collectors, can_review_deposits, can_manage_collections")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    permissions = {
+      collectors: perm?.can_manage_collectors ?? false,
+      deposits: perm?.can_review_deposits ?? false,
+      collections: perm?.can_manage_collections ?? false,
+    };
+  }
+
   return {
     userId: user.id,
     role,
+    isStaff: role === "admin" || role === "supervisor",
+    permissions,
     profile: p
       ? {
           id: p['id'] as string,

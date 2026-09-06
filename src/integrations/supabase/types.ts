@@ -470,6 +470,41 @@ export type Database = {
           },
         ]
       }
+      supervisor_permissions: {
+        Row: {
+          can_manage_collections: boolean
+          can_manage_collectors: boolean
+          can_review_deposits: boolean
+          created_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          can_manage_collections?: boolean
+          can_manage_collectors?: boolean
+          can_review_deposits?: boolean
+          created_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          can_manage_collections?: boolean
+          can_manage_collectors?: boolean
+          can_review_deposits?: boolean
+          created_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supervisor_permissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -576,13 +611,16 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_staff: { Args: never; Returns: boolean }
+      is_supervisor: { Args: never; Returns: boolean }
       reopen_collection_cycle: {
         Args: { _cycle_id: string }
         Returns: undefined
       }
+      supervisor_can: { Args: { _perm: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "collector"
+      app_role: "admin" | "collector" | "supervisor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -710,7 +748,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "collector"],
+      app_role: ["admin", "collector", "supervisor"],
     },
   },
 } as const

@@ -6,3 +6,5 @@
 - [x] Build cycle details, periodic entries, close, and reopen flows
 - [x] Add demo cycle data
 - [x] Verify types, build diagnostics, desktop/mobile UI, and deposits isolation
+- [x] تسمية تبويب التحصيل ونسب التحصيل ( الشاشة )
+- [x] إضافة حساب مشرف مع صلاحيات (إضافة محصلين / مراجعة التوريدات / إدارة التحصيل / اطلاع فقط)

@@ -121,7 +121,7 @@ function CollectionsPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div><h1 className="text-xl font-bold">التحصيل ونسب التحصيل</h1><p className="text-sm text-muted-foreground">دورات مستقلة للربط والتحصيل والإيرادات الأخرى</p></div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild><Button><Plus className="size-4" /> إنشاء دورة جديدة</Button></DialogTrigger>
+          <DialogTrigger asChild><Button disabled={!auth?.permissions.collections}><Plus className="size-4" /> إنشاء دورة جديدة</Button></DialogTrigger>
           <DialogContent dir="rtl" className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
             <DialogHeader className="text-right"><DialogTitle>إنشاء دورة تحصيل</DialogTitle><DialogDescription>حدد نطاق الدورة وبيانات الربط عند وصوله.</DialogDescription></DialogHeader>
             <div className="grid gap-4 sm:grid-cols-2">
