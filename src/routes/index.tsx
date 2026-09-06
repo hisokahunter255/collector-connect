@@ -154,15 +154,6 @@ function LoginPage() {
             {loading ? <Loader2 className="size-5 animate-spin" /> : "تسجيل الدخول"}
           </Button>
 
-          <div className="mt-6 rounded-xl bg-secondary p-4 text-xs leading-relaxed text-secondary-foreground">
-            <p className="font-semibold">حسابات تجريبية للمعاينة:</p>
-            <p dir="ltr" className="mt-1 text-start">
-              admin / Admin@123
-            </p>
-            <p dir="ltr" className="text-start">
-              mohamed01 / Pass@123
-            </p>
-          </div>
         </form>
       </section>
     </main>
