@@ -116,6 +116,15 @@ export const createCollector = createServerFn({ method: "POST" })
     }
     await supabaseAdmin.from("user_roles").insert({ user_id: newUserId, role: data.role });
 
+    const allAreas = Array.from(
+      new Set([...(data.area_id ? [data.area_id] : []), ...data.area_ids]),
+    );
+    if (allAreas.length > 0) {
+      await supabaseAdmin
+        .from("profile_areas")
+        .insert(allAreas.map((area_id) => ({ user_id: newUserId, area_id })));
+    }
+
     if (data.role === "supervisor") {
       await supabaseAdmin.from("supervisor_permissions").insert({
         user_id: newUserId,
