@@ -61,6 +61,14 @@ function CollectionsPage() {
   const [cycle, setCycle] = useState(ALL);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const removeCycle = useServerFn(deleteCollectionCycle);
+  const [toDelete, setToDelete] = useState<{ id: string; name: string } | null>(null);
+
+  const deleteCycle = useMutation({
+    mutationFn: async (id: string) => { await removeCycle({ data: { id } }); },
+    onSuccess: () => { toast.success("تم حذف الدورة المنتهية"); setToDelete(null); qc.invalidateQueries({ queryKey: ["collection-cycles"] }); },
+    onError: (e: Error) => toast.error(e.message || "تعذر حذف الدورة"),
+  });
 
   const { data: options } = useQuery<OptionData>({
     queryKey: ["collection-options"],
