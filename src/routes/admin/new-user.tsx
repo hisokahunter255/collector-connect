@@ -43,6 +43,11 @@ function NewUserPage() {
   const [areaId, setAreaId] = useState("");
   const [phone, setPhone] = useState("");
   const [active, setActive] = useState(true);
+  const [role, setRole] = useState<"collector" | "supervisor">("collector");
+  const [canCollectors, setCanCollectors] = useState(false);
+  const [canDeposits, setCanDeposits] = useState(false);
+  const [canCollections, setCanCollections] = useState(false);
+  const isSupervisor = role === "supervisor";
 
   const { data: branches } = useQuery({
     queryKey: ["branches"],
