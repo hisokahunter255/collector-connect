@@ -168,7 +168,7 @@ function CollectorsPage() {
     const t = term.trim().toLowerCase();
     if (!t) return data ?? [];
     return (data ?? []).filter((r) =>
-      [r.full_name, r.username, r.branch_name, r.area_name, r.phone]
+      [r.full_name, r.username, r.branch_name, r.area_name, r.phone, ...r.area_names]
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(t)),
     );
@@ -187,6 +187,32 @@ function CollectorsPage() {
         })
         .eq("id", row.id);
       if (error) throw error;
+
+      const wanted = Array.from(
+        new Set([...(row.area_id ? [row.area_id] : []), ...row.area_ids]),
+      );
+      const { data: current } = await supabase
+        .from("profile_areas")
+        .select("area_id")
+        .eq("user_id", row.id);
+      const existing = (current ?? []).map((c) => c.area_id as string);
+      const toAdd = wanted.filter((a) => !existing.includes(a));
+      const toRemove = existing.filter((a) => !wanted.includes(a));
+      if (toAdd.length > 0) {
+        const { error: addErr } = await supabase
+          .from("profile_areas")
+          .insert(toAdd.map((area_id) => ({ user_id: row.id, area_id })));
+        if (addErr) throw addErr;
+      }
+      if (toRemove.length > 0) {
+        const { error: delErr } = await supabase
+          .from("profile_areas")
+          .delete()
+          .eq("user_id", row.id)
+          .in("area_id", toRemove);
+        if (delErr) throw delErr;
+      }
+
       await audit({
         data: { action: "تعديل بيانات محصل", details: `تم تعديل بيانات ${row.full_name}` },
       });
