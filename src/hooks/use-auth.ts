@@ -8,9 +8,19 @@ export function usernameToEmail(username: string) {
   return `${username.trim().toLowerCase()}@${EMAIL_DOMAIN}`;
 }
 
+export type AppRole = "admin" | "supervisor" | "collector";
+
+export type StaffPermissions = {
+  collectors: boolean;
+  deposits: boolean;
+  collections: boolean;
+};
+
 export type AuthState = {
   userId: string;
-  role: "admin" | "collector";
+  role: AppRole;
+  isStaff: boolean;
+  permissions: StaffPermissions;
   profile: {
     id: string;
     full_name: string;
