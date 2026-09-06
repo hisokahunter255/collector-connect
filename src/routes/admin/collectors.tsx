@@ -84,14 +84,25 @@ function CollectorsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["collectors"],
     queryFn: async (): Promise<CollectorRow[]> => {
-      const [profiles, roles, deposits] = await Promise.all([
+      const [profiles, roles, deposits, links] = await Promise.all([
         supabase
           .from("profiles")
           .select("id, full_name, username, phone, active, branch_id, area_id, branches(name), areas(name)")
           .order("full_name"),
         supabase.from("user_roles").select("user_id, role"),
         supabase.from("deposits").select("collector_id, created_at").limit(5000),
+        supabase.from("profile_areas").select("user_id, area_id, areas(name)"),
       ]);
+      const areaLinks = new Map<string, { id: string; name: string }[]>();
+      for (const l of (links.data ?? []) as {
+        user_id: string;
+        area_id: string;
+        areas?: { name: string } | null;
+      }[]) {
+        const list = areaLinks.get(l.user_id) ?? [];
+        list.push({ id: l.area_id, name: l.areas?.name ?? "" });
+        areaLinks.set(l.user_id, list);
+      }
       if (profiles.error) throw profiles.error;
       const adminIds = new Set(
         (roles.data ?? []).filter((r) => r.role === "admin").map((r) => r.user_id),
