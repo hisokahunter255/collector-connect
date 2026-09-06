@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   Search,
+  Settings2,
   UserPlus,
   Users,
   Wallet,
@@ -45,6 +46,7 @@ const NAV = [
   { to: "/admin/branches", label: "الفروع والمناطق", icon: Building2, need: null },
   { to: "/admin/reports", label: "التقارير", icon: BarChart3, need: null },
   { to: "/admin/audit", label: "سجل العمليات", icon: BadgeCheck, need: null },
+  { to: "/admin/settings", label: "الإعدادات", icon: Settings2, need: null },
 ] as const;
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {

@@ -52,7 +52,7 @@ export const bootstrapDemo = createServerFn({ method: "POST" }).handler(async ()
     return id;
   }
 
-  const adminId = await makeUser("admin", "Admin@123", "مدير النظام", "admin");
+  const adminId = await makeUser("admin", "admin123", "مدير النظام", "admin");
   const c1 = await makeUser(
     "mohamed01",
     "Pass@123",

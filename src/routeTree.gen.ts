@@ -19,6 +19,7 @@ import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminDepositsRouteImport } from './routes/admin/deposits'
 import { Route as AdminNewUserRouteImport } from './routes/admin/new-user'
 import { Route as AdminReportsRouteImport } from './routes/admin/reports'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as CollectorDashboardRouteImport } from './routes/collector/dashboard'
 import { Route as CollectorMyDepositsRouteImport } from './routes/collector/my-deposits'
 import { Route as CollectorNewDepositRouteImport } from './routes/collector/new-deposit'
@@ -75,6 +76,11 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const CollectorDashboardRoute = CollectorDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/admin/deposits': typeof AdminDepositsRoute
   '/admin/new-user': typeof AdminNewUserRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/collector/dashboard': typeof CollectorDashboardRoute
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/admin/deposits': typeof AdminDepositsRoute
   '/admin/new-user': typeof AdminNewUserRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/collector/dashboard': typeof CollectorDashboardRoute
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/admin/deposits': typeof AdminDepositsRoute
   '/admin/new-user': typeof AdminNewUserRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/collector/dashboard': typeof CollectorDashboardRoute
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/admin/deposits'
     | '/admin/new-user'
     | '/admin/reports'
+    | '/admin/settings'
     | '/collector/dashboard'
     | '/collector/my-deposits'
     | '/collector/new-deposit'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin/deposits'
     | '/admin/new-user'
     | '/admin/reports'
+    | '/admin/settings'
     | '/collector/dashboard'
     | '/collector/my-deposits'
     | '/collector/new-deposit'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/admin/deposits'
     | '/admin/new-user'
     | '/admin/reports'
+    | '/admin/settings'
     | '/collector/dashboard'
     | '/collector/my-deposits'
     | '/collector/new-deposit'
@@ -285,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReportsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/collector/dashboard': {
       id: '/collector/dashboard'
       path: '/dashboard'
@@ -331,6 +350,7 @@ interface AdminRouteRouteChildren {
   AdminDepositsRoute: typeof AdminDepositsRoute
   AdminNewUserRoute: typeof AdminNewUserRoute
   AdminReportsRoute: typeof AdminReportsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminCollectionsCycleIdRoute: typeof AdminCollectionsCycleIdRoute
   AdminCollectionsIndexRoute: typeof AdminCollectionsIndexRoute
 }
@@ -343,6 +363,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDepositsRoute: AdminDepositsRoute,
   AdminNewUserRoute: AdminNewUserRoute,
   AdminReportsRoute: AdminReportsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminCollectionsCycleIdRoute: AdminCollectionsCycleIdRoute,
   AdminCollectionsIndexRoute: AdminCollectionsIndexRoute,
 }
