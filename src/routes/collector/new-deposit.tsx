@@ -72,6 +72,7 @@ function NewDepositPage() {
       const value = Number(amount);
       if (!Number.isFinite(count) || count <= 0) throw new Error("أدخل عدد فواتير صحيح");
       if (!Number.isFinite(value) || value <= 0) throw new Error("أدخل مبلغًا صحيحًا");
+      if (multiArea && !selectedArea) throw new Error("اختر المنطقة التي تورّد عنها");
 
       const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
       const path = `${profile.id}/${Date.now()}.${ext}`;
@@ -82,6 +83,7 @@ function NewDepositPage() {
 
       const { error } = await supabase.from("deposits").insert({
         collector_id: profile.id,
+        area_id: selectedArea || null,
         invoices_count: count,
         amount: value,
         receipt_image_url: path,
