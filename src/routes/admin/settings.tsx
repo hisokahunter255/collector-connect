@@ -253,6 +253,25 @@ function SettingsPage() {
             {backingUp ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
             تنزيل نسخة احتياطية
           </Button>
+
+          <div className="space-y-2 border-t pt-4">
+            <Label htmlFor="restore-file">استعادة نسخة احتياطية</Label>
+            <p className="text-sm text-muted-foreground">
+              اختر ملف النسخة الاحتياطية الذي نزّلته من النظام. سيتم استبدال البيانات الحالية بالبيانات الموجودة في الملف.
+            </p>
+            <Input
+              id="restore-file"
+              type="file"
+              accept="application/json,.json"
+              disabled={restoring}
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                setRestoreFile(file);
+                if (file) setRestoreOpen(true);
+                e.target.value = "";
+              }}
+            />
+          </div>
         </section>
       ) : null}
 
