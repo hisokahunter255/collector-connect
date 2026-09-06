@@ -132,6 +132,182 @@ export type Database = {
         }
         Relationships: []
       }
+      collection_cycles: {
+        Row: {
+          area_id: string | null
+          billing_invoices_count: number | null
+          billing_target_amount: number
+          branch_id: string
+          closed_at: string | null
+          closed_by: string | null
+          collector_id: string | null
+          created_at: string
+          created_by: string
+          final_billing_target_amount: number | null
+          final_collection_percentage: number | null
+          final_grand_total: number | null
+          final_invoice_collection: number | null
+          final_other_revenue: number | null
+          id: string
+          month: number
+          notes: string | null
+          status: string
+          target_received_date: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          area_id?: string | null
+          billing_invoices_count?: number | null
+          billing_target_amount?: number
+          branch_id: string
+          closed_at?: string | null
+          closed_by?: string | null
+          collector_id?: string | null
+          created_at?: string
+          created_by: string
+          final_billing_target_amount?: number | null
+          final_collection_percentage?: number | null
+          final_grand_total?: number | null
+          final_invoice_collection?: number | null
+          final_other_revenue?: number | null
+          id?: string
+          month: number
+          notes?: string | null
+          status?: string
+          target_received_date: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          area_id?: string | null
+          billing_invoices_count?: number | null
+          billing_target_amount?: number
+          branch_id?: string
+          closed_at?: string | null
+          closed_by?: string | null
+          collector_id?: string | null
+          created_at?: string
+          created_by?: string
+          final_billing_target_amount?: number | null
+          final_collection_percentage?: number | null
+          final_grand_total?: number | null
+          final_invoice_collection?: number | null
+          final_other_revenue?: number | null
+          id?: string
+          month?: number
+          notes?: string | null
+          status?: string
+          target_received_date?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_cycles_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_closed_by_fkey"
+            columns: ["closed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_collector_id_fkey"
+            columns: ["collector_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collection_entries: {
+        Row: {
+          collector_id: string | null
+          created_at: string
+          created_by: string
+          cycle_id: string
+          entry_date: string
+          id: string
+          invoices_collection_amount: number
+          notes: string | null
+          other_revenue_amount: number
+          updated_at: string
+        }
+        Insert: {
+          collector_id?: string | null
+          created_at?: string
+          created_by: string
+          cycle_id: string
+          entry_date?: string
+          id?: string
+          invoices_collection_amount?: number
+          notes?: string | null
+          other_revenue_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          collector_id?: string | null
+          created_at?: string
+          created_by?: string
+          cycle_id?: string
+          entry_date?: string
+          id?: string
+          invoices_collection_amount?: number
+          notes?: string | null
+          other_revenue_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_entries_collector_id_fkey"
+            columns: ["collector_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_entries_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_entries_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "collection_cycle_summaries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_entries_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "collection_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deposits: {
         Row: {
           admin_notes: string | null
@@ -201,6 +377,44 @@ export type Database = {
             columns: ["collector_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      other_revenue_items: {
+        Row: {
+          amount: number
+          category: string
+          collection_entry_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          collection_entry_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          collection_entry_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "other_revenue_items_collection_entry_id_fkey"
+            columns: ["collection_entry_id"]
+            isOneToOne: false
+            referencedRelation: "collection_entries"
             referencedColumns: ["id"]
           },
         ]
@@ -279,9 +493,81 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      collection_cycle_summaries: {
+        Row: {
+          area_id: string | null
+          area_name: string | null
+          billing_invoices_count: number | null
+          billing_target_amount: number | null
+          branch_id: string | null
+          branch_name: string | null
+          closed_at: string | null
+          closed_by: string | null
+          collection_percentage: number | null
+          collector_id: string | null
+          collector_name: string | null
+          created_at: string | null
+          created_by: string | null
+          final_billing_target_amount: number | null
+          final_collection_percentage: number | null
+          final_grand_total: number | null
+          final_invoice_collection: number | null
+          final_other_revenue: number | null
+          grand_total: number | null
+          id: string | null
+          month: number | null
+          notes: string | null
+          status: string | null
+          target_received_date: string | null
+          total_invoice_collection: number | null
+          total_other_revenue: number | null
+          updated_at: string | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_cycles_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_closed_by_fkey"
+            columns: ["closed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_collector_id_fkey"
+            columns: ["collector_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_cycles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      close_collection_cycle: {
+        Args: { _cycle_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -290,6 +576,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      reopen_collection_cycle: {
+        Args: { _cycle_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "collector"
