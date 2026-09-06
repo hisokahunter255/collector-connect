@@ -345,16 +345,29 @@ function DepositsPage() {
                     {row.admin_notes ?? "-"}
                   </td>
                   <td className="p-3">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => {
-                        setReviewing(row);
-                        setAdminNote(row.admin_notes ?? "");
-                      }}
-                    >
-                      {canReview ? "عرض ومراجعة" : "عرض"}
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => {
+                          setReviewing(row);
+                          setAdminNote(row.admin_notes ?? "");
+                        }}
+                      >
+                        {canReview ? "عرض ومراجعة" : "عرض"}
+                      </Button>
+                      {auth?.role === "admin" ? (
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="text-destructive"
+                          aria-label="حذف التوريد"
+                          onClick={() => setToDelete(row)}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      ) : null}
+                    </div>
                   </td>
                 </tr>
               ))}
