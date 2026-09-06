@@ -168,12 +168,20 @@ function DepositsPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-bold">التوريدات</h1>
-        <p className="text-sm text-muted-foreground">
-          {formatNumber(stats.total)} عملية • {formatNumber(stats.invoices)} فاتورة •{" "}
-          {formatMoney(stats.amount)}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold">التوريدات</h1>
+          <p className="text-sm text-muted-foreground">
+            {formatNumber(stats.total)} عملية • {formatNumber(stats.invoices)} فاتورة •{" "}
+            {formatMoney(stats.amount)}
+          </p>
+        </div>
+        <Button
+          disabled={pendingRows.length === 0 || reviewAll.isPending}
+          onClick={() => setConfirmAll(true)}
+        >
+          <CheckCircle2 className="size-4" /> تمت مراجعة الكل ({formatNumber(pendingRows.length)})
+        </Button>
       </div>
 
       <div className="card-elevated grid gap-3 p-4 md:grid-cols-3 lg:grid-cols-4">
