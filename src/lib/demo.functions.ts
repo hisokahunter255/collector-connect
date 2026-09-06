@@ -93,8 +93,8 @@ export const bootstrapDemo = createServerFn({ method: "POST" }).handler(async ()
     const createdAt = new Date(Date.now() - s.days * 86400000);
     await supabaseAdmin.from("deposits").insert({
       collector_id: s.u,
-      branch_id: s.b,
-      area_id: s.a,
+      branch_id: s.b ?? null,
+      area_id: s.a ?? null,
       invoices_count: s.inv,
       amount: s.amt,
       receipt_image_url: path,
