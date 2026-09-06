@@ -322,7 +322,9 @@ function CollectorsPage() {
                     {row.username}
                   </td>
                   <td className="p-3">{row.branch_name ?? "-"}</td>
-                  <td className="p-3">{row.area_name ?? "-"}</td>
+                  <td className="p-3">
+                    {row.area_names.length > 0 ? row.area_names.join(" • ") : (row.area_name ?? "-")}
+                  </td>
                   <td className="p-3 font-mono text-xs" dir="ltr">
                     {row.phone ?? "-"}
                   </td>
