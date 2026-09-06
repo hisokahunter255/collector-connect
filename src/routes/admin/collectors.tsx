@@ -121,6 +121,10 @@ function CollectorsPage() {
         .map((p) => {
           const row = p as typeof p & { branches?: { name: string } | null; areas?: { name: string } | null };
           const s = stats.get(p.id);
+          const linked = areaLinks.get(p.id) ?? [];
+          if (p.area_id && !linked.some((a) => a.id === p.area_id)) {
+            linked.unshift({ id: p.area_id, name: row.areas?.name ?? "" });
+          }
           return {
             id: p.id,
             full_name: p.full_name,
@@ -131,6 +135,8 @@ function CollectorsPage() {
             area_id: p.area_id,
             branch_name: row.branches?.name ?? null,
             area_name: row.areas?.name ?? null,
+            area_ids: linked.map((a) => a.id),
+            area_names: linked.map((a) => a.name).filter(Boolean),
             deposits: s?.count ?? 0,
             lastDeposit: s?.last ?? null,
           };
