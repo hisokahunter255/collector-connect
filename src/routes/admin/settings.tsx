@@ -49,6 +49,47 @@ function SettingsPage() {
   const [cleanupMonth, setCleanupMonth] = useState("");
   const [cleanupOpen, setCleanupOpen] = useState(false);
   const [cleaning, setCleaning] = useState(false);
+  const runBackup = useServerFn(exportBackup);
+  const runReset = useServerFn(resetOperationalData);
+  const [backingUp, setBackingUp] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const [resetConfirm, setResetConfirm] = useState("");
+  const [includeAudit, setIncludeAudit] = useState(true);
+  const [includeBranches, setIncludeBranches] = useState(false);
+
+  async function downloadBackup() {
+    setBackingUp(true);
+    try {
+      const snapshot = await runBackup({});
+      const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("تم تنزيل ملف النسخة الاحتياطية");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "تعذر إنشاء النسخة الاحتياطية");
+    } finally {
+      setBackingUp(false);
+    }
+  }
+
+  async function confirmReset() {
+    setResetting(true);
+    try {
+      await runReset({ data: { confirm: resetConfirm.trim(), includeAudit, includeBranches } });
+      setResetOpen(false);
+      setResetConfirm("");
+      toast.success("تم مسح البيانات القديمة، يمكنك البدء من جديد");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "تعذر مسح البيانات");
+    } finally {
+      setResetting(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
