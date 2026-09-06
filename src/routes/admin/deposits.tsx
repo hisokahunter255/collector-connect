@@ -38,7 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type DepositSearch = { q?: string; status?: string };
+type DepositSearch = { q?: string | undefined; status?: string | undefined };
 
 export const Route = createFileRoute("/admin/deposits")({
   validateSearch: (search: Record<string, unknown>): DepositSearch => ({

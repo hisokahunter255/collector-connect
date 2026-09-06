@@ -59,7 +59,7 @@ export function rangeToDates(
   key: RangeKey,
   from?: string,
   to?: string,
-): { from?: string; to?: string } {
+): { from?: string | undefined; to?: string | undefined } {
   const now = new Date();
   switch (key) {
     case "today":
