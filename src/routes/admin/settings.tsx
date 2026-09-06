@@ -2,14 +2,24 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, Settings2 } from "lucide-react";
+import { ImageOff, Loader2, Settings2, Trash2 } from "lucide-react";
 
-import { updateMyCredentials } from "@/lib/account.functions";
+import { deleteReviewedReceiptImages, updateMyCredentials } from "@/lib/account.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({
@@ -30,6 +40,10 @@ function SettingsPage() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
+  const cleanupReceipts = useServerFn(deleteReviewedReceiptImages);
+  const [cleanupMonth, setCleanupMonth] = useState("");
+  const [cleanupOpen, setCleanupOpen] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,6 +74,27 @@ function SettingsPage() {
       toast.error(error instanceof Error ? error.message : "تعذر حفظ التعديلات");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function confirmCleanup() {
+    if (!cleanupMonth) {
+      toast.error("اختر الشهر أولًا");
+      return;
+    }
+    setCleaning(true);
+    try {
+      const result = await cleanupReceipts({ data: { month: cleanupMonth } });
+      setCleanupOpen(false);
+      if (result.deletedCount === 0) {
+        toast.info("لا توجد صور إيصالات مراجعة في الشهر المحدد");
+      } else {
+        toast.success(`تم حذف ${result.deletedCount.toLocaleString("ar-EG")} صورة إيصال`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "تعذر حذف صور الإيصالات");
+    } finally {
+      setCleaning(false);
     }
   }
 
@@ -113,6 +148,72 @@ function SettingsPage() {
           {saving ? <Loader2 className="size-4 animate-spin" /> : "حفظ التعديلات"}
         </Button>
       </form>
+
+      {auth?.role === "admin" ? (
+        <section className="card-elevated max-w-lg space-y-4 p-5" aria-labelledby="receipt-cleanup-title">
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+              <ImageOff className="size-5" />
+            </div>
+            <div>
+              <h2 id="receipt-cleanup-title" className="font-bold">
+                تنظيف صور الإيصالات
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                حذف صور الإيصالات التي تمت مراجعتها في شهر محدد لتوفير المساحة. ستبقى كل بيانات التوريدات محفوظة.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="cleanup-month">شهر التوريدات</Label>
+            <Input
+              id="cleanup-month"
+              type="month"
+              dir="ltr"
+              className="text-start"
+              value={cleanupMonth}
+              onChange={(event) => setCleanupMonth(event.target.value)}
+            />
+          </div>
+
+          <Button
+            type="button"
+            variant="destructive"
+            className="w-full"
+            disabled={!cleanupMonth || cleaning}
+            onClick={() => setCleanupOpen(true)}
+          >
+            {cleaning ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+            حذف صور الشهر المحدد
+          </Button>
+        </section>
+      ) : null}
+
+      <AlertDialog open={cleanupOpen} onOpenChange={setCleanupOpen}>
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader className="text-right sm:text-right">
+            <AlertDialogTitle>حذف صور الإيصالات نهائيًا؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              سيتم حذف صور الإيصالات المراجعة لشهر {cleanupMonth || "المحدد"} نهائيًا، ولن يمكن استعادتها. لن تُحذف بيانات التوريدات، ولن تتأثر العمليات المنتظرة للمراجعة.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel disabled={cleaning}>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={cleaning}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={(event) => {
+                event.preventDefault();
+                void confirmCleanup();
+              }}
+            >
+              {cleaning ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+              تأكيد الحذف
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
