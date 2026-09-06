@@ -103,6 +103,7 @@ export async function fetchAuthState(): Promise<AuthState | null> {
           area_id: (p['area_id'] as string | null) ?? null,
           branch_name: p.branches?.name ?? null,
           area_name: p.areas?.name ?? null,
+          areas: assignedAreas,
         }
       : null,
   };
