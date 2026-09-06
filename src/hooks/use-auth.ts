@@ -31,6 +31,7 @@ export type AuthState = {
     area_id: string | null;
     branch_name: string | null;
     area_name: string | null;
+    areas: { id: string; name: string }[];
   } | null;
 };
 
