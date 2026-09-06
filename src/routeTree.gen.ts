@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CollectorRouteRouteImport } from './routes/collector/route'
+import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AdminBranchesRouteImport } from './routes/admin/branches'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminNewUserRouteImport } from './routes/admin/new-user'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,9 +32,24 @@ const CollectorRouteRoute = CollectorRouteRouteImport.update({
   path: '/collector',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminBranchesRoute = AdminBranchesRouteImport.update({
+  id: '/branches',
+  path: '/branches',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminNewUserRoute = AdminNewUserRouteImport.update({
+  id: '/new-user',
+  path: '/new-user',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -39,27 +57,58 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/collector': typeof CollectorRouteRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/branches': typeof AdminBranchesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/new-user': typeof AdminNewUserRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/collector': typeof CollectorRouteRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/branches': typeof AdminBranchesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/new-user': typeof AdminNewUserRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/collector': typeof CollectorRouteRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/branches': typeof AdminBranchesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/new-user': typeof AdminNewUserRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/collector' | '/admin/dashboard'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/collector'
+    | '/admin/audit'
+    | '/admin/branches'
+    | '/admin/dashboard'
+    | '/admin/new-user'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/collector' | '/admin/dashboard'
-  id: '__root__' | '/' | '/admin' | '/collector' | '/admin/dashboard'
+  to:
+    | '/'
+    | '/admin'
+    | '/collector'
+    | '/admin/audit'
+    | '/admin/branches'
+    | '/admin/dashboard'
+    | '/admin/new-user'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/collector'
+    | '/admin/audit'
+    | '/admin/branches'
+    | '/admin/dashboard'
+    | '/admin/new-user'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -91,6 +140,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectorRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/branches': {
+      id: '/admin/branches'
+      path: '/branches'
+      fullPath: '/admin/branches'
+      preLoaderRoute: typeof AdminBranchesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -98,15 +161,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/new-user': {
+      id: '/admin/new-user'
+      path: '/new-user'
+      fullPath: '/admin/new-user'
+      preLoaderRoute: typeof AdminNewUserRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
 interface AdminRouteRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminBranchesRoute: typeof AdminBranchesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminNewUserRoute: typeof AdminNewUserRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminBranchesRoute: AdminBranchesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminNewUserRoute: AdminNewUserRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
