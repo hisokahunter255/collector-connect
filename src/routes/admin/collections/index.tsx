@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { AreaChart, BarChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar } from "recharts";
+import { BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar } from "recharts";
 import { ArrowDown, ArrowLeft, ArrowUp, Banknote, CalendarRange, FileStack, Gauge, Plus, ReceiptText, WalletCards } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 
-export const Route = createFileRoute("/admin/collections")({
+export const Route = createFileRoute("/admin/collections/")({
   head: () => ({ meta: [
     { title: "التحصيل ونسب التحصيل | نظام توريدات المحصلين" },
     { name: "description", content: "إدارة دورات التحصيل والربط ونسب التحصيل والمقارنات الشهرية." },
@@ -175,7 +175,7 @@ function CollectionsPage() {
       </div> : null}
 
       {timeline.length ? <div className="grid gap-4 lg:grid-cols-2">
-        <ChartPanel title="نسبة التحصيل الشهرية"><ResponsiveContainer width="100%" height={260}><AreaChart data={timeline}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name"/><YAxis unit="%"/><Tooltip/><Line type="monotone" dataKey="percentage" stroke="var(--color-primary)" strokeWidth={3}/></AreaChart></ResponsiveContainer></ChartPanel>
+        <ChartPanel title="نسبة التحصيل الشهرية"><ResponsiveContainer width="100%" height={260}><LineChart data={timeline}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name"/><YAxis unit="%"/><Tooltip/><Line type="monotone" dataKey="percentage" stroke="var(--color-primary)" strokeWidth={3}/></LineChart></ResponsiveContainer></ChartPanel>
         <ChartPanel title="متحصلات الفواتير"><ResponsiveContainer width="100%" height={260}><BarChart data={timeline}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name"/><YAxis/><Tooltip/><Bar dataKey="invoices" fill="var(--color-success)" radius={[4,4,0,0]}/></BarChart></ResponsiveContainer></ChartPanel>
         <ChartPanel title="الإيرادات الأخرى"><ResponsiveContainer width="100%" height={260}><BarChart data={timeline}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name"/><YAxis/><Tooltip/><Bar dataKey="other" fill="var(--color-chart-4)" radius={[4,4,0,0]}/></BarChart></ResponsiveContainer></ChartPanel>
         <ChartPanel title="إجمالي المتحصلات"><ResponsiveContainer width="100%" height={260}><BarChart data={timeline}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name"/><YAxis/><Tooltip/><Bar dataKey="grand" fill="var(--color-primary)" radius={[4,4,0,0]}/></BarChart></ResponsiveContainer></ChartPanel>
