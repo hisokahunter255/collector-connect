@@ -43,11 +43,11 @@ export async function fetchAuthState(): Promise<AuthState | null> {
   const [profileRes, rolesRes, areasRes] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, username, phone, active, branch_id, area_id, branches(name), areas(name)")
+      .select("id, full_name, username, phone, active, branch_id, area_id, branches(name), areas!profiles_area_id_fkey(name)")
       .eq("id", user.id)
       .maybeSingle(),
     supabase.from("user_roles").select("role").eq("user_id", user.id),
-    supabase.from("profile_areas").select("area_id, areas(name)").eq("user_id", user.id),
+    supabase.from("profile_areas").select("area_id, areas!profile_areas_area_id_fkey(name)").eq("user_id", user.id),
   ]);
 
 
