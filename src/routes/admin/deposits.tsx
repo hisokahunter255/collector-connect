@@ -105,6 +105,7 @@ function DepositsPage() {
   });
 
   const stats = summarize(rows ?? []);
+  const [confirmAll, setConfirmAll] = useState(false);
 
   const review = useMutation({
     mutationFn: async (p: { row: DepositRow; status: "approved" | "rejected"; note: string }) => {
@@ -134,18 +135,54 @@ function DepositsPage() {
     onError: () => toast.error("تعذر تحديث حالة المراجعة"),
   });
 
+  const pendingRows = (rows ?? []).filter((r) => r.status === "pending");
+
+  const reviewAll = useMutation({
+    mutationFn: async () => {
+      const ids = pendingRows.map((r) => r.id);
+      if (ids.length === 0) return 0;
+      const { error } = await supabase
+        .from("deposits")
+        .update({ status: "approved", reviewed_at: new Date().toISOString() })
+        .in("id", ids);
+      if (error) throw error;
+      await audit({
+        data: {
+          action: "مراجعة كل التوريدات",
+          details: `تمت مراجعة ${ids.length} عملية دفعة واحدة`,
+        },
+      });
+      return ids.length;
+    },
+    onSuccess: (count) => {
+      toast.success(`تمت مراجعة ${formatNumber(Number(count))} عملية`);
+      setConfirmAll(false);
+      queryClient.invalidateQueries({ queryKey: ["deposits"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+    },
+    onError: () => toast.error("تعذر تنفيذ المراجعة الجماعية"),
+  });
+
   const areaOptions = (options?.areas ?? []).filter(
     (a) => branchId === ALL || a.branch_id === branchId,
   );
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-bold">التوريدات</h1>
-        <p className="text-sm text-muted-foreground">
-          {formatNumber(stats.total)} عملية • {formatNumber(stats.invoices)} فاتورة •{" "}
-          {formatMoney(stats.amount)}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold">التوريدات</h1>
+          <p className="text-sm text-muted-foreground">
+            {formatNumber(stats.total)} عملية • {formatNumber(stats.invoices)} فاتورة •{" "}
+            {formatMoney(stats.amount)}
+          </p>
+        </div>
+        <Button
+          disabled={pendingRows.length === 0 || reviewAll.isPending}
+          onClick={() => setConfirmAll(true)}
+        >
+          <CheckCircle2 className="size-4" /> تمت مراجعة الكل ({formatNumber(pendingRows.length)})
+        </Button>
       </div>
 
       <div className="card-elevated grid gap-3 p-4 md:grid-cols-3 lg:grid-cols-4">
@@ -393,6 +430,30 @@ function DepositsPage() {
               </div>
             </div>
           ) : null}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={confirmAll} onOpenChange={(o) => !o && setConfirmAll(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>تأكيد مراجعة الكل</DialogTitle>
+            <DialogDescription>
+              سيتم تحديد {formatNumber(pendingRows.length)} عملية في انتظار المراجعة كـ «تمت
+              المراجعة» حسب الفلاتر الحالية.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Button
+              className="flex-1"
+              disabled={reviewAll.isPending}
+              onClick={() => reviewAll.mutate()}
+            >
+              <CheckCircle2 className="size-4" /> تأكيد
+            </Button>
+            <Button variant="secondary" className="flex-1" onClick={() => setConfirmAll(false)}>
+              إلغاء
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
