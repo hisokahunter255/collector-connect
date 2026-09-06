@@ -14,6 +14,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CollectorRouteRouteImport } from './routes/collector/route'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminBranchesRouteImport } from './routes/admin/branches'
+import { Route as AdminCollectorsRouteImport } from './routes/admin/collectors'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminNewUserRouteImport } from './routes/admin/new-user'
 
@@ -42,6 +43,11 @@ const AdminBranchesRoute = AdminBranchesRouteImport.update({
   path: '/branches',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminCollectorsRoute = AdminCollectorsRouteImport.update({
+  id: '/collectors',
+  path: '/collectors',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/collector': typeof CollectorRouteRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
+  '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/new-user': typeof AdminNewUserRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/collector': typeof CollectorRouteRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
+  '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/new-user': typeof AdminNewUserRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/collector': typeof CollectorRouteRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/branches': typeof AdminBranchesRoute
+  '/admin/collectors': typeof AdminCollectorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/new-user': typeof AdminNewUserRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
+    | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/new-user'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
+    | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/new-user'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/collector'
     | '/admin/audit'
     | '/admin/branches'
+    | '/admin/collectors'
     | '/admin/dashboard'
     | '/admin/new-user'
   fileRoutesById: FileRoutesById
@@ -154,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBranchesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/collectors': {
+      id: '/admin/collectors'
+      path: '/collectors'
+      fullPath: '/admin/collectors'
+      preLoaderRoute: typeof AdminCollectorsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -174,6 +193,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminBranchesRoute: typeof AdminBranchesRoute
+  AdminCollectorsRoute: typeof AdminCollectorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminNewUserRoute: typeof AdminNewUserRoute
 }
@@ -181,6 +201,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminBranchesRoute: AdminBranchesRoute,
+  AdminCollectorsRoute: AdminCollectorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminNewUserRoute: AdminNewUserRoute,
 }
