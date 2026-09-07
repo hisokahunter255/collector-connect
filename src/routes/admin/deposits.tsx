@@ -314,7 +314,14 @@ function DepositsPage() {
             {formatMoney(stats.amount)}
           </p>
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+        {isAdmin ? (
+          <Button variant="outline" onClick={() => setManualOpen(true)}>
+            <Plus className="size-4" /> إضافة توريد لمحصل
+          </Button>
+        ) : null}
         <Button
+
           disabled={!canReview || pendingRows.length === 0 || reviewAll.isPending}
           onClick={() => setConfirmAll(true)}
         >
