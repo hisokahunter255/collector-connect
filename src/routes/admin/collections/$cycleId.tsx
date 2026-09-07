@@ -50,7 +50,21 @@ function CycleDetailsPage() {
   const [targetOpen, setTargetOpen] = useState(false);
   const [targetAmount, setTargetAmount] = useState("");
   const [targetInvoices, setTargetInvoices] = useState("");
+  const [shot, setShot] = useState<File | null>(null);
+  const [shotPreview, setShotPreview] = useState<string | null>(null);
   const [editEntry, setEditEntry] = useState<{ id: string; date: string; invoices: string; other: string; notes: string } | null>(null);
+
+  const pickShot = async (file: File | null) => {
+    if (!file) { setShot(null); setShotPreview(null); return; }
+    try {
+      const compressed = await compressReceipt(file);
+      setShot(compressed);
+      setShotPreview(URL.createObjectURL(compressed));
+    } catch (e) {
+      toast.error((e as Error).message || "تعذر قراءة الصورة");
+    }
+  };
+
 
   const { data: cycle, isLoading } = useQuery({ queryKey: ["collection-cycle", cycleId], queryFn: () => fetchCycle(cycleId) });
   const { data: entries } = useQuery({ queryKey: ["collection-entries", cycleId], queryFn: () => fetchCycleEntries(cycleId) });
