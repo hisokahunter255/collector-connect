@@ -140,6 +140,110 @@ function DepositsPage() {
     onError: (e: Error) => toast.error(e.message || "تعذر حذف التوريد"),
   });
 
+  const isAdmin = auth?.role === "admin";
+  const today = new Date().toISOString().slice(0, 10);
+  const saveDetails = useServerFn(updateDepositDetails);
+  const addManualFn = useServerFn(createManualDeposit);
+  const blankManual = {
+    collector: "",
+    area: ALL,
+    date: today,
+    time: "12:00",
+    invoices: "",
+    amount: "",
+    notes: "",
+    status: "approved" as "approved" | "pending",
+  };
+  const [manualOpen, setManualOpen] = useState(false);
+  const [manual, setManual] = useState(blankManual);
+  const [fix, setFix] = useState({
+    date: today,
+    time: "12:00",
+    invoices: "",
+    amount: "",
+    notes: "",
+    status: "pending" as "pending" | "approved" | "rejected",
+  });
+
+  function openReview(row: DepositRow) {
+    setReviewing(row);
+    setAdminNote(row.admin_notes ?? "");
+    const created = new Date(row.created_at);
+    setFix({
+      date: row.created_at.slice(0, 10),
+      time: `${String(created.getHours()).padStart(2, "0")}:${String(created.getMinutes()).padStart(2, "0")}`,
+      invoices: String(row.invoices_count),
+      amount: String(row.amount),
+      notes: row.notes ?? "",
+      status: row.status as "pending" | "approved" | "rejected",
+    });
+  }
+
+  const refreshDeposits = () => {
+    queryClient.invalidateQueries({ queryKey: ["deposits"] });
+    queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+  };
+
+  const fixDeposit = useMutation({
+    mutationFn: async (row: DepositRow) => {
+      const invoices = Number(fix.invoices);
+      const amount = Number(String(fix.amount).replace(/,/g, ""));
+      if (!Number.isFinite(invoices) || invoices < 0) throw new Error("عدد الفواتير غير صحيح");
+      if (!Number.isFinite(amount) || amount < 0) throw new Error("المبلغ غير صحيح");
+      if (!fix.date) throw new Error("أدخل تاريخ التوريد");
+      await saveDetails({
+        data: {
+          id: row.id,
+          invoices_count: invoices,
+          amount,
+          notes: fix.notes,
+          admin_notes: adminNote,
+          entry_date: fix.date,
+          entry_time: fix.time || "12:00",
+          status: fix.status,
+        },
+      });
+    },
+    onSuccess: () => {
+      toast.success("تم تصحيح بيانات التوريد");
+      setReviewing(null);
+      refreshDeposits();
+    },
+    onError: (e: Error) => toast.error(e.message || "تعذر تصحيح التوريد"),
+  });
+
+  const addManual = useMutation({
+    mutationFn: async () => {
+      const invoices = Number(manual.invoices);
+      const amount = Number(String(manual.amount).replace(/,/g, ""));
+      if (!manual.collector) throw new Error("اختر المحصل");
+      if (!manual.date) throw new Error("أدخل تاريخ التوريد");
+      if (!Number.isFinite(invoices) || invoices < 0) throw new Error("عدد الفواتير غير صحيح");
+      if (!Number.isFinite(amount) || amount <= 0) throw new Error("أدخل مبلغ التوريد");
+      await addManualFn({
+        data: {
+          collector_id: manual.collector,
+          area_id: manual.area === ALL ? null : manual.area,
+          invoices_count: invoices,
+          amount,
+          notes: manual.notes,
+          entry_date: manual.date,
+          entry_time: manual.time || "12:00",
+          status: manual.status,
+        },
+      });
+    },
+    onSuccess: () => {
+      toast.success("تمت إضافة التوريد للمحصل");
+      setManualOpen(false);
+      setManual(blankManual);
+      refreshDeposits();
+    },
+    onError: (e: Error) => toast.error(e.message || "تعذر إضافة التوريد"),
+  });
+
+
+
   const review = useMutation({
     mutationFn: async (p: { row: DepositRow; status: "approved" | "rejected"; note: string }) => {
       const { error } = await supabase
