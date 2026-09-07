@@ -50,6 +50,7 @@ function CycleDetailsPage() {
   const [targetOpen, setTargetOpen] = useState(false);
   const [targetAmount, setTargetAmount] = useState("");
   const [targetInvoices, setTargetInvoices] = useState("");
+  const [editEntry, setEditEntry] = useState<{ id: string; date: string; invoices: string; other: string; notes: string } | null>(null);
 
   const { data: cycle, isLoading } = useQuery({ queryKey: ["collection-cycle", cycleId], queryFn: () => fetchCycle(cycleId) });
   const { data: entries } = useQuery({ queryKey: ["collection-entries", cycleId], queryFn: () => fetchCycleEntries(cycleId) });
