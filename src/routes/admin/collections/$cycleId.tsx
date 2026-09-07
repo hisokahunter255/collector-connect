@@ -104,6 +104,23 @@ function CycleDetailsPage() {
     onError: (e: Error) => toast.error(e.message || "تعذر حذف العملية"),
   });
 
+  const updateEntry = useMutation({
+    mutationFn: async () => {
+      if (!editEntry) return;
+      const inv = money(editEntry.invoices || "0");
+      const oth = money(editEntry.other || "0");
+      if (Number.isNaN(inv) || Number.isNaN(oth)) throw new Error("تأكد من صحة المبالغ المكتوبة");
+      if (!editEntry.date) throw new Error("أدخل تاريخ التحصيل");
+      const { error } = await supabase.from("collection_entries").update({
+        entry_date: editEntry.date, invoices_collection_amount: inv,
+        other_revenue_amount: oth, notes: editEntry.notes.trim() || null,
+      }).eq("id", editEntry.id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("تم تعديل عملية التحصيل"); setEditEntry(null); refresh(); },
+    onError: (e: Error) => toast.error(e.message || "تعذر تعديل العملية"),
+  });
+
   const saveTarget = useMutation({
     mutationFn: async () => {
       const amount = money(targetAmount);
