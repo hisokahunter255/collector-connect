@@ -547,6 +547,92 @@ function DepositsPage() {
                 </p>
               ) : null}
 
+              {isAdmin ? (
+                <div className="space-y-3 rounded-xl border border-border p-3">
+                  <div>
+                    <p className="text-sm font-bold">تصحيح بيانات التوريد</p>
+                    <p className="text-xs text-muted-foreground">
+                      لو فيه خطأ في المبلغ أو الفواتير أو التاريخ، عدّلها هنا واحفظ التصحيح.
+                    </p>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">تاريخ التوريد</Label>
+                      <Input
+                        type="date"
+                        value={fix.date}
+                        onChange={(e) => setFix({ ...fix, date: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">وقت التوريد</Label>
+                      <Input
+                        type="time"
+                        value={fix.time}
+                        onChange={(e) => setFix({ ...fix, time: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">عدد الفواتير</Label>
+                      <Input
+                        dir="ltr"
+                        inputMode="numeric"
+                        value={fix.invoices}
+                        onChange={(e) => setFix({ ...fix, invoices: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">المبلغ</Label>
+                      <Input
+                        dir="ltr"
+                        inputMode="decimal"
+                        value={fix.amount}
+                        onChange={(e) => setFix({ ...fix, amount: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">ملاحظات المحصل</Label>
+                      <Input
+                        value={fix.notes}
+                        onChange={(e) => setFix({ ...fix, notes: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">حالة المراجعة</Label>
+                      <Select
+                        value={fix.status}
+                        onValueChange={(v) =>
+                          setFix({ ...fix, status: v as "pending" | "approved" | "rejected" })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">في انتظار المراجعة</SelectItem>
+                          <SelectItem value="approved">تمت المراجعة</SelectItem>
+                          <SelectItem value="rejected">يحتاج تصحيح</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    disabled={fixDeposit.isPending}
+                    onClick={() => reviewing && fixDeposit.mutate(reviewing)}
+                  >
+                    {fixDeposit.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Save className="size-4" />
+                    )}
+                    حفظ التصحيح
+                  </Button>
+                </div>
+              ) : null}
+
+
               <ReceiptFull path={reviewing.receipt_image_url} />
 
               <div className="space-y-2">
