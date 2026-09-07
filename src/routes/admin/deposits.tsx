@@ -3,12 +3,26 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, FileSearch, Loader2, Search, Trash2, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  FileSearch,
+  Loader2,
+  Plus,
+  Save,
+  Search,
+  Trash2,
+  XCircle,
+} from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { logAudit } from "@/lib/admin.functions";
-import { deleteDeposit } from "@/lib/maintenance.functions";
+import {
+  createManualDeposit,
+  deleteDeposit,
+  updateDepositDetails,
+} from "@/lib/maintenance.functions";
+
 import { fetchDeposits, summarize, type DepositRow } from "@/lib/deposits";
 import {
   formatDate,
