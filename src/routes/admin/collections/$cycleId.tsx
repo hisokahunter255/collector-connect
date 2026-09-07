@@ -2,14 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowRight, Banknote, CalendarDays, FileStack, Gauge, LockKeyhole, Pencil, Plus, RotateCcw, Trash2, WalletCards } from "lucide-react";
+import { ArrowRight, Banknote, CalendarDays, FileStack, Gauge, ImagePlus, LockKeyhole, Pencil, Plus, RotateCcw, Trash2, WalletCards, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { cycleName, displayCycleTotals, fetchCycle, fetchCycleEntries } from "@/lib/collections";
+import { ALLOWED_TYPES, compressReceipt } from "@/lib/image";
 import { formatDate, formatDateTime, formatMoney, formatNumber, formatTime } from "@/lib/format";
 import { CycleStatusBadge } from "@/components/app/cycle-status-badge";
+import { ReceiptThumb } from "@/components/app/receipt-image";
 import { StatCard } from "@/components/app/stat-card";
+
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
