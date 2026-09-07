@@ -490,10 +490,8 @@ function DepositsPage() {
                       <Button
                         size="sm"
                         variant="secondary"
-                        onClick={() => {
-                          setReviewing(row);
-                          setAdminNote(row.admin_notes ?? "");
-                        }}
+                        onClick={() => openReview(row)}
+
                       >
                         {canReview ? "عرض ومراجعة" : "عرض"}
                       </Button>
