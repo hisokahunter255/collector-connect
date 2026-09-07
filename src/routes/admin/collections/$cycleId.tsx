@@ -93,9 +93,17 @@ function CycleDetailsPage() {
         if (Math.abs(sum - otherDelta) > 0.009) throw new Error(`مجموع بنود الإيرادات الأخرى (${sum}) يجب أن يساوي الزيادة الجديدة (${otherDelta})`);
       }
       if (!auth?.userId) throw new Error("تعذر تحديد المستخدم");
+      let shotPath: string | null = null;
+      if (shot) {
+        const path = `${auth.userId}/collections/${cycleId}-${Date.now()}.jpg`;
+        const { error: upErr } = await supabase.storage.from("receipts").upload(path, shot, { contentType: shot.type || "image/jpeg", upsert: false });
+        if (upErr) throw new Error("تعذر رفع صورة الشاشة: " + upErr.message);
+        shotPath = path;
+      }
       const { data: entry, error } = await supabase.from("collection_entries").insert({
         cycle_id: cycleId, entry_date: entryDate, invoices_collection_amount: invoiceDelta,
         other_revenue_amount: otherDelta, notes: notes.trim() || null, created_by: auth.userId,
+        screenshot_url: shotPath,
       }).select("id").single();
       if (error) throw error;
       if (validItems.length) {
@@ -105,7 +113,8 @@ function CycleDetailsPage() {
         if (itemsError) { await supabase.from("collection_entries").delete().eq("id", entry.id); throw itemsError; }
       }
     },
-    onSuccess: () => { toast.success("تمت إضافة عملية التحصيل"); setInvoiceTotal(""); setOtherTotal(""); setNotes(""); setItems([blankItem()]); refresh(); },
+    onSuccess: () => { toast.success("تمت إضافة عملية التحصيل"); setInvoiceTotal(""); setOtherTotal(""); setNotes(""); setItems([blankItem()]); setShot(null); setShotPreview(null); refresh(); },
+
     onError: (e: Error) => toast.error(e.message),
   });
 
