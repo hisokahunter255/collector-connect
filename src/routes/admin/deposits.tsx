@@ -321,13 +321,14 @@ function DepositsPage() {
           </Button>
         ) : null}
         <Button
-
           disabled={!canReview || pendingRows.length === 0 || reviewAll.isPending}
           onClick={() => setConfirmAll(true)}
         >
           <CheckCircle2 className="size-4" /> تمت مراجعة الكل ({formatNumber(pendingRows.length)})
         </Button>
+        </div>
       </div>
+
 
       <div className="card-elevated grid gap-3 p-4 md:grid-cols-3 lg:grid-cols-4">
         <div className="relative md:col-span-3 lg:col-span-2">
