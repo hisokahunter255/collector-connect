@@ -215,6 +215,25 @@ function CycleDetailsPage() {
         <Field label="إجمالي تحصيل الفواتير حتى اليوم"><Input dir="ltr" inputMode="decimal" value={invoiceTotal} onChange={(e)=>setInvoiceTotal(e.target.value)} placeholder={String(soFarInvoices)}/><p className="text-xs text-muted-foreground">المسجل سابقًا {formatMoney(soFarInvoices)} • الجديد {formatMoney(invoiceDelta)}</p></Field>
         <Field label="إجمالي الإيرادات الأخرى حتى اليوم"><Input dir="ltr" inputMode="decimal" value={otherTotal} onChange={(e)=>setOtherTotal(e.target.value)} placeholder={String(soFarOther)}/><p className="text-xs text-muted-foreground">المسجل سابقًا {formatMoney(soFarOther)} • الجديد {formatMoney(otherDelta)}</p></Field>
       </div>
+      <div className="mt-4 rounded-lg border border-dashed border-border bg-secondary/30 p-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 className="text-sm font-bold">صورة شاشة الكمبيوتر (اختياري)</h3>
+            <p className="text-xs text-muted-foreground">أضف صورة للشاشة بجوار التسجيل اليدوي لتوثيق الأرقام — JPG, PNG, WEBP</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {shotPreview ? <>
+              <img src={shotPreview} alt="صورة شاشة الكمبيوتر" className="size-14 rounded-lg border border-border object-cover" />
+              <Button variant="ghost" size="icon" aria-label="إزالة الصورة" onClick={()=>pickShot(null)}><X className="size-4 text-destructive"/></Button>
+            </> : null}
+            <Button variant="outline" asChild>
+              <label htmlFor="cycle-shot" className="cursor-pointer"><ImagePlus className="size-4"/> {shotPreview ? "تغيير الصورة" : "إضافة صورة"}</label>
+            </Button>
+            <input id="cycle-shot" type="file" className="sr-only" accept={ALLOWED_TYPES.join(",")} onChange={(e)=>pickShot(e.target.files?.[0] ?? null)} />
+          </div>
+        </div>
+      </div>
+
       <div className="mt-5 border-t border-border pt-4"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-sm font-bold">بنود الإيرادات الأخرى (اختياري)</h3><p className="text-xs text-muted-foreground">الملفات، المخالفات، الأعمال الأخرى — بمبالغ اليوم فقط، ومجموعها يساوي الجديد {formatMoney(otherDelta)}{itemsSum?` (المكتوب ${formatMoney(itemsSum)})`:""}</p></div><Button variant="outline" size="sm" onClick={()=>setItems(s=>[...s,blankItem()])}><Plus className="size-4"/> إضافة بند</Button></div>
         <div className="space-y-3">{items.map((item,index)=><div key={index} className="grid gap-2 rounded-lg bg-secondary/50 p-3 sm:grid-cols-[1fr_160px_1fr_auto]"><Input placeholder="نوع الإيراد" value={item.category} onChange={(e)=>setItems(s=>s.map((x,i)=>i===index?{...x,category:e.target.value}:x))}/><Input dir="ltr" inputMode="decimal" placeholder="المبلغ" value={item.amount} onChange={(e)=>setItems(s=>s.map((x,i)=>i===index?{...x,amount:e.target.value}:x))}/><Input placeholder="ملاحظات البند" value={item.notes} onChange={(e)=>setItems(s=>s.map((x,i)=>i===index?{...x,notes:e.target.value}:x))}/><Button variant="ghost" size="icon" aria-label="حذف البند" disabled={items.length===1} onClick={()=>setItems(s=>s.filter((_,i)=>i!==index))}><Trash2 className="size-4 text-destructive"/></Button></div>)}</div>
       </div>
