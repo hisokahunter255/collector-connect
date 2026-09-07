@@ -61,7 +61,7 @@ function NavGroup({
 }: {
   title: string;
   items: readonly NavItem[];
-  onNavigate?: () => void;
+  onNavigate?: (() => void) | undefined;
 }) {
   return (
     <div className="space-y-1">
