@@ -50,6 +50,7 @@ function CycleDetailsPage() {
   const [targetOpen, setTargetOpen] = useState(false);
   const [targetAmount, setTargetAmount] = useState("");
   const [targetInvoices, setTargetInvoices] = useState("");
+  const [editEntry, setEditEntry] = useState<{ id: string; date: string; invoices: string; other: string; notes: string } | null>(null);
 
   const { data: cycle, isLoading } = useQuery({ queryKey: ["collection-cycle", cycleId], queryFn: () => fetchCycle(cycleId) });
   const { data: entries } = useQuery({ queryKey: ["collection-entries", cycleId], queryFn: () => fetchCycleEntries(cycleId) });
@@ -101,6 +102,23 @@ function CycleDetailsPage() {
     },
     onSuccess: () => { toast.success("تم حذف عملية التحصيل"); setEntryToDelete(null); refresh(); },
     onError: (e: Error) => toast.error(e.message || "تعذر حذف العملية"),
+  });
+
+  const updateEntry = useMutation({
+    mutationFn: async () => {
+      if (!editEntry) return;
+      const inv = money(editEntry.invoices || "0");
+      const oth = money(editEntry.other || "0");
+      if (Number.isNaN(inv) || Number.isNaN(oth)) throw new Error("تأكد من صحة المبالغ المكتوبة");
+      if (!editEntry.date) throw new Error("أدخل تاريخ التحصيل");
+      const { error } = await supabase.from("collection_entries").update({
+        entry_date: editEntry.date, invoices_collection_amount: inv,
+        other_revenue_amount: oth, notes: editEntry.notes.trim() || null,
+      }).eq("id", editEntry.id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("تم تعديل عملية التحصيل"); setEditEntry(null); refresh(); },
+    onError: (e: Error) => toast.error(e.message || "تعذر تعديل العملية"),
   });
 
   const saveTarget = useMutation({
@@ -178,7 +196,7 @@ function CycleDetailsPage() {
     </section> : <div className="rounded-lg border border-border bg-secondary/50 p-4 text-center text-sm text-muted-foreground"><LockKeyhole className="mx-auto mb-2 size-5"/>تم تثبيت النتائج. أعد فتح الدورة لإضافة عمليات جديدة.</div>}
 
     <section className="card-elevated overflow-hidden"><div className="border-b border-border p-4"><h2 className="font-bold">سجل عمليات التحصيل</h2><p className="text-xs text-muted-foreground">{formatNumber(entries?.length??0)} عملية مسجلة</p></div><div className="overflow-x-auto"><table className="w-full min-w-[1050px] text-right text-sm"><thead className="bg-secondary/60 text-xs text-muted-foreground"><tr><th className="p-3">التاريخ</th><th className="p-3">الوقت</th><th className="p-3">فواتير جديدة</th><th className="p-3">إجمالي الفواتير</th><th className="p-3">إيرادات أخرى جديدة</th><th className="p-3">إجمالي الإيرادات الأخرى</th><th className="p-3">بنود الإيرادات الأخرى</th><th className="p-3">ملاحظات</th><th className="p-3">أدخلها</th><th className="p-3"></th></tr></thead><tbody>
-      {(entries??[]).map(entry=><tr key={entry.id} className="border-t border-border align-top"><td className="p-3">{formatDate(entry.entry_date)}</td><td className="p-3">{formatTime(entry.created_at)}</td><td className="p-3 font-semibold">{formatMoney(entry.invoices_collection_amount)}</td><td className="p-3">{formatMoney(running.get(entry.id)?.invoices??0)}</td><td className="p-3 font-semibold">{formatMoney(entry.other_revenue_amount)}</td><td className="p-3">{formatMoney(running.get(entry.id)?.other??0)}</td><td className="p-3">{entry.items.length?<ul className="space-y-1">{entry.items.map(item=><li key={item.id}>{item.category}: <span className="font-semibold">{formatMoney(item.amount)}</span>{item.notes?<span className="text-xs text-muted-foreground"> — {item.notes}</span>:null}</li>)}</ul>:"-"}</td><td className="p-3 text-muted-foreground">{entry.notes??"-"}</td><td className="p-3">{entry.creator_name}</td><td className="p-3">{canEdit?<Button variant="ghost" size="icon" className="text-destructive" aria-label="حذف العملية" onClick={()=>setEntryToDelete(entry.id)}><Trash2 className="size-4"/></Button>:null}</td></tr>)}
+      {(entries??[]).map(entry=><tr key={entry.id} className="border-t border-border align-top"><td className="p-3">{formatDate(entry.entry_date)}</td><td className="p-3">{formatTime(entry.created_at)}</td><td className="p-3 font-semibold">{formatMoney(entry.invoices_collection_amount)}</td><td className="p-3">{formatMoney(running.get(entry.id)?.invoices??0)}</td><td className="p-3 font-semibold">{formatMoney(entry.other_revenue_amount)}</td><td className="p-3">{formatMoney(running.get(entry.id)?.other??0)}</td><td className="p-3">{entry.items.length?<ul className="space-y-1">{entry.items.map(item=><li key={item.id}>{item.category}: <span className="font-semibold">{formatMoney(item.amount)}</span>{item.notes?<span className="text-xs text-muted-foreground"> — {item.notes}</span>:null}</li>)}</ul>:"-"}</td><td className="p-3 text-muted-foreground">{entry.notes??"-"}</td><td className="p-3">{entry.creator_name}</td><td className="p-3">{canEdit?<div className="flex items-center gap-1"><Button variant="ghost" size="icon" aria-label="تعديل العملية" onClick={()=>setEditEntry({id:entry.id,date:String(entry.entry_date).slice(0,10),invoices:String(Number(entry.invoices_collection_amount??0)),other:String(Number(entry.other_revenue_amount??0)),notes:entry.notes??""})}><Pencil className="size-4"/></Button><Button variant="ghost" size="icon" className="text-destructive" aria-label="حذف العملية" onClick={()=>setEntryToDelete(entry.id)}><Trash2 className="size-4"/></Button></div>:null}</td></tr>)}
       {!entries?.length?<tr><td colSpan={10} className="p-10 text-center text-muted-foreground">لا توجد عمليات تحصيل في هذه الدورة بعد</td></tr>:null}
     </tbody></table></div></section>
 
@@ -190,6 +208,19 @@ function CycleDetailsPage() {
           <Field label="عدد فواتير الربط (اختياري)"><Input dir="ltr" type="number" min="0" value={targetInvoices} onChange={(e)=>setTargetInvoices(e.target.value)}/></Field>
           <Button disabled={saveTarget.isPending} onClick={()=>saveTarget.mutate()}>حفظ الربط</Button>
         </div>
+      </DialogContent>
+    </Dialog>
+
+    <Dialog open={!!editEntry} onOpenChange={(o)=>{if(!o)setEditEntry(null)}}>
+      <DialogContent dir="rtl" className="max-w-md">
+        <DialogHeader className="text-right"><DialogTitle>تعديل عملية التحصيل</DialogTitle><DialogDescription>المبالغ هنا هي المبالغ الجديدة الخاصة بهذه العملية فقط، وستتحدث الإجماليات والنسبة تلقائيًا.</DialogDescription></DialogHeader>
+        {editEntry?<div className="grid gap-4">
+          <Field label="تاريخ التحصيل"><Input type="date" value={editEntry.date} onChange={(e)=>setEditEntry({...editEntry,date:e.target.value})}/></Field>
+          <Field label="مبلغ تحصيل الفواتير (جديد)"><Input dir="ltr" inputMode="decimal" value={editEntry.invoices} onChange={(e)=>setEditEntry({...editEntry,invoices:e.target.value})}/></Field>
+          <Field label="مبلغ الإيرادات الأخرى (جديد)"><Input dir="ltr" inputMode="decimal" value={editEntry.other} onChange={(e)=>setEditEntry({...editEntry,other:e.target.value})}/></Field>
+          <Field label="ملاحظات العملية"><Textarea value={editEntry.notes} onChange={(e)=>setEditEntry({...editEntry,notes:e.target.value})}/></Field>
+          <Button disabled={updateEntry.isPending} onClick={()=>updateEntry.mutate()}>حفظ التعديل</Button>
+        </div>:null}
       </DialogContent>
     </Dialog>
 
