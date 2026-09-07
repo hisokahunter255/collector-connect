@@ -680,6 +680,130 @@ function DepositsPage() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={manualOpen} onOpenChange={(o) => !o && setManualOpen(false)}>
+        <DialogContent dir="rtl" className="max-h-[92vh] max-w-lg overflow-auto">
+          <DialogHeader className="text-right">
+            <DialogTitle>إضافة توريد لمحصل</DialogTitle>
+            <DialogDescription>
+              لتسجيل توريد قديم أو بتاريخ معين بدون صورة إيصال. الفرع يُؤخذ من حساب المحصل.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1 sm:col-span-2">
+              <Label className="text-xs">المحصل</Label>
+              <Select
+                value={manual.collector}
+                onValueChange={(v) => setManual({ ...manual, collector: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="اختر المحصل" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(options?.collectors ?? []).map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.full_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label className="text-xs">المنطقة (اختياري)</Label>
+              <Select value={manual.area} onValueChange={(v) => setManual({ ...manual, area: v })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="منطقة حساب المحصل" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>منطقة حساب المحصل</SelectItem>
+                  {(options?.areas ?? []).map((a) => (
+                    <SelectItem key={a.id} value={a.id}>
+                      {a.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">تاريخ التوريد</Label>
+              <Input
+                type="date"
+                value={manual.date}
+                onChange={(e) => setManual({ ...manual, date: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">وقت التوريد</Label>
+              <Input
+                type="time"
+                value={manual.time}
+                onChange={(e) => setManual({ ...manual, time: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">عدد الفواتير</Label>
+              <Input
+                dir="ltr"
+                inputMode="numeric"
+                value={manual.invoices}
+                onChange={(e) => setManual({ ...manual, invoices: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">المبلغ</Label>
+              <Input
+                dir="ltr"
+                inputMode="decimal"
+                value={manual.amount}
+                onChange={(e) => setManual({ ...manual, amount: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label className="text-xs">حالة المراجعة</Label>
+              <Select
+                value={manual.status}
+                onValueChange={(v) => setManual({ ...manual, status: v as "approved" | "pending" })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="approved">تمت المراجعة</SelectItem>
+                  <SelectItem value="pending">في انتظار المراجعة</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label className="text-xs">ملاحظات</Label>
+              <Textarea
+                rows={2}
+                value={manual.notes}
+                onChange={(e) => setManual({ ...manual, notes: e.target.value })}
+                placeholder="سبب الإضافة اليدوية"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              className="flex-1"
+              disabled={addManual.isPending}
+              onClick={() => addManual.mutate()}
+            >
+              {addManual.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Plus className="size-4" />
+              )}
+              حفظ التوريد
+            </Button>
+            <Button variant="secondary" className="flex-1" onClick={() => setManualOpen(false)}>
+              إلغاء
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+
+
       <Dialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
         <DialogContent dir="rtl" className="max-w-md">
           <DialogHeader className="text-right">
