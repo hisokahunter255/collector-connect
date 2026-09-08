@@ -176,12 +176,13 @@ function NewDepositPage() {
         </Button>
 
         <div className="space-y-2">
-          <Label htmlFor="invoices">عدد الفواتير</Label>
+          <Label htmlFor="invoices">عدد الفواتير (اختياري)</Label>
           <Input
             id="invoices"
             type="number"
             inputMode="numeric"
-            min={1}
+            min={0}
+            placeholder="اتركه فارغًا لو مش متوفر"
             className="h-12 text-lg"
             value={invoices}
             onChange={(e) => setInvoices(e.target.value)}
