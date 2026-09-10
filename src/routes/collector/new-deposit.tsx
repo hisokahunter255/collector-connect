@@ -37,6 +37,7 @@ function NewDepositPage() {
   const { data: auth } = useAuth();
   const profile = auth?.profile;
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -147,10 +148,17 @@ function NewDepositPage() {
         }}
       >
         <input
-          ref={fileRef}
+          ref={cameraRef}
           type="file"
           accept="image/jpeg,image/jpg,image/png,image/webp"
           capture="environment"
+          className="hidden"
+          onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+        />
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
           className="hidden"
           onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
         />
