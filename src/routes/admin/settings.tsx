@@ -120,9 +120,15 @@ function SettingsPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const nextUser = username.trim().toLowerCase();
+    const nextName = fullName.trim();
     const changedUser = nextUser && nextUser !== (auth?.profile?.username ?? "");
-    if (!changedUser && !password) {
+    const changedName = nextName && nextName !== (auth?.profile?.full_name ?? "");
+    if (!changedUser && !changedName && !password) {
       toast.error("لا يوجد تغيير للحفظ");
+      return;
+    }
+    if (nextName && nextName.length < 3) {
+      toast.error("الاسم قصير جدًا");
       return;
     }
     if (password && password !== confirm) {
@@ -133,15 +139,21 @@ function SettingsPage() {
     try {
       await update({
         data: {
+          ...(changedName ? { fullName: nextName } : {}),
           ...(changedUser ? { username: nextUser } : {}),
           ...(password ? { password } : {}),
         },
       });
       setPassword("");
       setConfirm("");
-      toast.success("تم حفظ بيانات الدخول. سجّل الدخول من جديد بالبيانات الجديدة.");
-      await supabase.auth.signOut();
-      window.location.href = "/";
+      if (changedUser || password) {
+        toast.success("تم حفظ بيانات الدخول. سجّل الدخول من جديد بالبيانات الجديدة.");
+        await supabase.auth.signOut();
+        window.location.href = "/";
+        return;
+      }
+      await queryClient.invalidateQueries({ queryKey: ["auth-state"] });
+      toast.success("تم حفظ الاسم");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "تعذر حفظ التعديلات");
     } finally {
