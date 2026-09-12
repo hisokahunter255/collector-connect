@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -46,6 +46,12 @@ function SettingsPage() {
   const update = useServerFn(updateMyCredentials);
   const [fullName, setFullName] = useState(auth?.profile?.full_name ?? "");
   const [username, setUsername] = useState(auth?.profile?.username ?? "");
+  useEffect(() => {
+    if (auth?.profile) {
+      setFullName(auth.profile.full_name ?? "");
+      setUsername(auth.profile.username ?? "");
+    }
+  }, [auth?.profile?.full_name, auth?.profile?.username]);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
