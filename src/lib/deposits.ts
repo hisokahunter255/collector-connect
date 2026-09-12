@@ -98,7 +98,7 @@ export async function fetchDeposits(filters: DepositFilters = {}): Promise<Depos
         .some((v) => String(v).toLowerCase().includes(term)),
     );
   }
-  return rows;
+  return attachReviewerNames(rows);
 }
 
 export function summarize(rows: DepositRow[]) {
