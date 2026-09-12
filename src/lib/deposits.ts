@@ -14,6 +14,8 @@ export type DepositRow = {
   admin_notes: string | null;
   created_at: string;
   reviewed_at: string | null;
+  reviewed_by: string | null;
+  reviewer_name: string | null;
   collector_name: string;
   collector_username: string;
   branch_name: string | null;
@@ -21,7 +23,7 @@ export type DepositRow = {
 };
 
 const SELECT =
-  "id, ref, collector_id, branch_id, area_id, invoices_count, amount, receipt_image_url, notes, status, admin_notes, created_at, reviewed_at, profiles!deposits_collector_profile_fkey(full_name, username), branches(name), areas(name)";
+  "id, ref, collector_id, branch_id, area_id, invoices_count, amount, receipt_image_url, notes, status, admin_notes, created_at, reviewed_at, reviewed_by, profiles!deposits_collector_profile_fkey(full_name, username), branches(name), areas(name)";
 
 export type DepositFilters = {
   collectorId?: string | undefined;
