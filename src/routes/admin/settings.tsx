@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Download, Eraser, ImageOff, Loader2, Settings2, Trash2, Upload } from "lucide-react";
@@ -41,7 +42,9 @@ export const Route = createFileRoute("/admin/settings")({
 
 function SettingsPage() {
   const { data: auth } = useAuth();
+  const queryClient = useQueryClient();
   const update = useServerFn(updateMyCredentials);
+  const [fullName, setFullName] = useState(auth?.profile?.full_name ?? "");
   const [username, setUsername] = useState(auth?.profile?.username ?? "");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
