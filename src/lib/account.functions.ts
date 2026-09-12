@@ -47,10 +47,13 @@ export const updateMyCredentials = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
 
-    if (newUsername) {
+    const profileUpdate: { username?: string; full_name?: string } = {};
+    if (newUsername) profileUpdate.username = newUsername;
+    if (data.fullName) profileUpdate.full_name = data.fullName.trim();
+    if (Object.keys(profileUpdate).length > 0) {
       const { error: pErr } = await supabaseAdmin
         .from("profiles")
-        .update({ username: newUsername })
+        .update(profileUpdate)
         .eq("id", userId);
       if (pErr) throw new Error(pErr.message);
     }
@@ -64,8 +67,9 @@ export const updateMyCredentials = createServerFn({ method: "POST" })
     await supabaseAdmin.from("audit_logs").insert({
       actor_id: userId,
       actor_name: (p?.full_name as string) ?? "مدير النظام",
-      action: "تعديل بيانات الدخول",
+      action: "تعديل بيانات الحساب",
       details: [
+        profileUpdate.full_name ? `تم تغيير الاسم إلى ${profileUpdate.full_name}` : null,
         newUsername ? `تم تغيير اسم المستخدم إلى ${newUsername}` : null,
         data.password ? "تم تغيير كلمة المرور" : null,
       ]
