@@ -6,6 +6,7 @@ const EMAIL_DOMAIN = "tawreedat.app";
 
 const schema = z
   .object({
+    fullName: z.string().trim().min(3, "الاسم قصير جدًا").max(80).optional(),
     username: z
       .string()
       .min(3, "اسم المستخدم قصير جدًا")
@@ -14,7 +15,7 @@ const schema = z
       .optional(),
     password: z.string().min(6, "كلمة المرور 6 أحرف على الأقل").optional(),
   })
-  .refine((v) => v.username || v.password, { message: "لا يوجد تغيير" });
+  .refine((v) => v.username || v.password || v.fullName, { message: "لا يوجد تغيير" });
 
 /** Any signed-in user can change their own username and/or password. */
 export const updateMyCredentials = createServerFn({ method: "POST" })
