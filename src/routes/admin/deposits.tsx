@@ -461,6 +461,7 @@ function DepositsPage() {
                 <th className="p-3 font-semibold">الوقت</th>
                 <th className="p-3 font-semibold">الإيصال</th>
                 <th className="p-3 font-semibold">الحالة</th>
+                <th className="p-3 font-semibold">تمت المراجعة بواسطة</th>
                 <th className="p-3 font-semibold">ملاحظات الإدارة</th>
                 <th className="p-3 font-semibold">مراجعة</th>
               </tr>
