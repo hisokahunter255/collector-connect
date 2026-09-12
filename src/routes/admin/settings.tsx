@@ -192,11 +192,23 @@ function SettingsPage() {
           <Settings2 className="size-5" /> الإعدادات
         </h1>
         <p className="text-sm text-muted-foreground">
-          تعديل اسم المستخدم وكلمة المرور الخاصة بحسابك
+          تعديل الاسم واسم المستخدم وكلمة المرور الخاصة بحسابك
         </p>
       </div>
 
       <form onSubmit={onSubmit} className="card-elevated max-w-lg space-y-4 p-5">
+        <div className="space-y-2">
+          <Label htmlFor="full-name">الاسم</Label>
+          <Input
+            id="full-name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="اسم مدير النظام"
+          />
+          <p className="text-xs text-muted-foreground">
+            هذا الاسم يظهر في سجل العمليات وفي مراجعة التوريدات
+          </p>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="username">اسم المستخدم</Label>
           <Input
