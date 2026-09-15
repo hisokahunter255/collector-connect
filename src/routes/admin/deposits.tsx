@@ -259,12 +259,16 @@ function DepositsPage() {
         })
         .eq("id", p.row.id);
       if (error) throw error;
-      await audit({
-        data: {
-          action: p.status === "approved" ? "مراجعة توريد" : "رفض توريد",
-          details: `عملية رقم ${p.row.ref} للمحصل ${p.row.collector_name}${p.note ? ` - ${p.note}` : ""}`,
-        },
-      });
+      try {
+        await audit({
+          data: {
+            action: p.status === "approved" ? "مراجعة توريد" : "رفض توريد",
+            details: `عملية رقم ${p.row.ref} للمحصل ${p.row.collector_name}${p.note ? ` - ${p.note}` : ""}`,
+          },
+        });
+      } catch (e) {
+        console.warn("audit log failed", e);
+      }
     },
     onSuccess: () => {
       toast.success("تم تحديث حالة المراجعة");
