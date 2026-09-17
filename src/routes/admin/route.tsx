@@ -8,6 +8,7 @@ import {
   Gauge,
   LayoutDashboard,
   LogOut,
+  Megaphone,
   Menu,
   Search,
   Settings2,
