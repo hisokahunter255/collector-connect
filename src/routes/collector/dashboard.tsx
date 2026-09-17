@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Banknote, ClipboardList, FilePlus2, Receipt, Wallet } from "lucide-react";
+import { Banknote, ClipboardList, FilePlus2, Megaphone, Receipt, Wallet } from "lucide-react";
 
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { fetchDeposits, summarize } from "@/lib/deposits";
 import { formatMoney, formatNumber, isoDayStart } from "@/lib/format";
