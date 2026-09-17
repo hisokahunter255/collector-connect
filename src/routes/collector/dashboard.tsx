@@ -32,6 +32,21 @@ function CollectorDashboard() {
     queryFn: () => fetchDeposits({ collectorId: profile!.id, from: isoDayStart() }),
   });
 
+  const { data: notices } = useQuery({
+    queryKey: ["my-announcements", profile?.id],
+    enabled: !!profile?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("announcements")
+        .select("id, message")
+        .eq("active", true)
+        .or(`target_user_id.is.null,target_user_id.eq.${profile!.id}`)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as { id: string; message: string }[];
+    },
+  });
+
   const stats = summarize(today ?? []);
 
   return (
