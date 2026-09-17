@@ -64,6 +64,20 @@ function CollectorDashboard() {
         </div>
       </section>
 
+      {(notices ?? []).map((notice) => (
+        <div
+          key={notice.id}
+          className="card-elevated flex items-start gap-3 border-s-4 border-primary p-4"
+          role="status"
+        >
+          <Megaphone className="mt-0.5 size-5 shrink-0 text-primary" />
+          <div>
+            <p className="text-sm font-bold">رسالة من الإدارة</p>
+            <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">{notice.message}</p>
+          </div>
+        </div>
+      ))}
+
       <Button asChild className="h-16 w-full text-lg font-bold shadow-lg">
         <Link to="/collector/new-deposit">
           <FilePlus2 className="size-6" /> إضافة توريد جديد
