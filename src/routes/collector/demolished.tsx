@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PropertyReportSection } from "@/components/app/property-report-section";
+import { BackButton } from "@/components/app/back-button";
 
 export const Route = createFileRoute("/collector/demolished")({
   head: () => ({

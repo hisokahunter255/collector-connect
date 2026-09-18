@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { ALLOWED_TYPES, compressReceipt } from "@/lib/image";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { ReceiptThumb } from "@/components/app/receipt-image";
+import { BackButton } from "@/components/app/back-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
