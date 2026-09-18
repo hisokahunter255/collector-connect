@@ -14,11 +14,14 @@ export const Route = createFileRoute("/collector/abandoned")({
     ],
   }),
   component: () => (
-    <PropertyReportSection
-      table="abandoned_properties"
-      title="العقارات المهجورة"
-      description="أضف رقم العقار المهجور والاشتراكات الموجودة به وصور العقار."
-      subsLabel="الاشتراكات الموجودة بالعقار"
-    />
+    <div className="space-y-4">
+      <BackButton to="/collector/dashboard" label="رجوع" />
+      <PropertyReportSection
+        table="abandoned_properties"
+        title="العقارات المهجورة"
+        description="أضف رقم العقار المهجور والاشتراكات الموجودة به وصور العقار."
+        subsLabel="الاشتراكات الموجودة بالعقار"
+      />
+    </div>
   ),
 });

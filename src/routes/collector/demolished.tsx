@@ -14,11 +14,14 @@ export const Route = createFileRoute("/collector/demolished")({
     ],
   }),
   component: () => (
-    <PropertyReportSection
-      table="demolished_properties"
-      title="العقارات التي تم هدمها"
-      description="أضف رقم العقار المهدوم والاشتراكات التي ما زالت تعمل وصور العقار."
-      subsLabel="الاشتراكات التي ما زالت تعمل"
-    />
+    <div className="space-y-4">
+      <BackButton to="/collector/dashboard" label="رجوع" />
+      <PropertyReportSection
+        table="demolished_properties"
+        title="العقارات التي تم هدمها"
+        description="أضف رقم العقار المهدوم والاشتراكات التي ما زالت تعمل وصور العقار."
+        subsLabel="الاشتراكات التي ما زالت تعمل"
+      />
+    </div>
   ),
 });

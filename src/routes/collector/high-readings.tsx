@@ -133,6 +133,7 @@ function HighReadingsPage() {
 
   return (
     <div className="space-y-5">
+      <BackButton to="/collector/dashboard" label="رجوع" />
       <div>
         <h1 className="text-xl font-bold">القراءات العالية</h1>
         <p className="text-sm text-muted-foreground">
