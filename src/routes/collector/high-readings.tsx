@@ -288,9 +288,23 @@ function HighReadingsPage() {
                 <span className="font-bold">اشتراك {row.subscription_no}</span>
                 <span className="text-xs text-muted-foreground">{formatDateTime(row.created_at)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-lg bg-secondary/60 px-3 py-2">
-                <span className="text-muted-foreground">القراءة</span>
-                <span className="font-semibold">{formatNumber(row.reading)}</span>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div className="flex items-center justify-between rounded-lg bg-secondary/60 px-3 py-2">
+                  <span className="text-muted-foreground">السابقة</span>
+                  <span className="font-semibold">
+                    {row.previous_reading === null ? "-" : formatNumber(row.previous_reading)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-secondary/60 px-3 py-2">
+                  <span className="text-muted-foreground">الحالية</span>
+                  <span className="font-semibold">
+                    {row.current_reading === null ? "-" : formatNumber(row.current_reading)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-primary/10 px-3 py-2">
+                  <span className="text-muted-foreground">فرق القراءة</span>
+                  <span className="font-bold text-primary">{formatNumber(row.reading)}</span>
+                </div>
               </div>
               {row.notes ? <p className="text-muted-foreground">{row.notes}</p> : null}
               {row.images?.length ? (
