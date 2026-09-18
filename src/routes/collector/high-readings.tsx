@@ -129,6 +129,8 @@ function HighReadingsPage() {
         area_id: profile.area_id,
         subscription_no: subscriptionNo.trim(),
         reading: value,
+        previous_reading: prev,
+        current_reading: curr,
         notes: notes.trim() || null,
         images: paths,
       });
@@ -140,7 +142,8 @@ function HighReadingsPage() {
     onSuccess: () => {
       toast.success("تم حفظ القراءة بنجاح");
       setSubscriptionNo("");
-      setReading("");
+      setPreviousReading("");
+      setCurrentReading("");
       setNotes("");
       setFiles([]);
       setPreviews([]);
@@ -176,17 +179,42 @@ function HighReadingsPage() {
           />
         </div>
 
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label htmlFor="prev-reading">القراءة السابقة</Label>
+            <Input
+              id="prev-reading"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step="0.01"
+              className="h-12 text-lg"
+              value={previousReading}
+              onChange={(e) => setPreviousReading(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="curr-reading">القراءة الحالية</Label>
+            <Input
+              id="curr-reading"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step="0.01"
+              className="h-12 text-lg"
+              value={currentReading}
+              onChange={(e) => setCurrentReading(e.target.value)}
+            />
+          </div>
+        </div>
+
         <div className="space-y-2">
-          <Label htmlFor="reading">القراءة العالية</Label>
+          <Label htmlFor="diff-reading">فرق القراءة</Label>
           <Input
-            id="reading"
-            type="number"
-            inputMode="decimal"
-            min={0}
-            step="0.01"
-            className="h-12 text-lg"
-            value={reading}
-            onChange={(e) => setReading(e.target.value)}
+            id="diff-reading"
+            readOnly
+            className="h-12 bg-secondary/60 text-lg font-bold"
+            value={diff === null ? "" : formatNumber(diff)}
           />
         </div>
 
