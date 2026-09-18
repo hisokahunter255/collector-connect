@@ -21,7 +21,9 @@ import { Route as AdminDepositsRouteImport } from './routes/admin/deposits'
 import { Route as AdminNewUserRouteImport } from './routes/admin/new-user'
 import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as CollectorAbandonedRouteImport } from './routes/collector/abandoned'
 import { Route as CollectorDashboardRouteImport } from './routes/collector/dashboard'
+import { Route as CollectorDemolishedRouteImport } from './routes/collector/demolished'
 import { Route as CollectorMyDepositsRouteImport } from './routes/collector/my-deposits'
 import { Route as CollectorNewDepositRouteImport } from './routes/collector/new-deposit'
 import { Route as AdminCollectionsIndexRouteImport } from './routes/admin/collections/index'
@@ -87,9 +89,19 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const CollectorAbandonedRoute = CollectorAbandonedRouteImport.update({
+  id: '/abandoned',
+  path: '/abandoned',
+  getParentRoute: () => CollectorRouteRoute,
+} as any)
 const CollectorDashboardRoute = CollectorDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => CollectorRouteRoute,
+} as any)
+const CollectorDemolishedRoute = CollectorDemolishedRouteImport.update({
+  id: '/demolished',
+  path: '/demolished',
   getParentRoute: () => CollectorRouteRoute,
 } as any)
 const CollectorMyDepositsRoute = CollectorMyDepositsRouteImport.update({
@@ -126,7 +138,9 @@ export interface FileRoutesByFullPath {
   '/admin/new-user': typeof AdminNewUserRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/collector/abandoned': typeof CollectorAbandonedRoute
   '/collector/dashboard': typeof CollectorDashboardRoute
+  '/collector/demolished': typeof CollectorDemolishedRoute
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
   '/admin/collections/$cycleId': typeof AdminCollectionsCycleIdRoute
@@ -145,7 +159,9 @@ export interface FileRoutesByTo {
   '/admin/new-user': typeof AdminNewUserRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/collector/abandoned': typeof CollectorAbandonedRoute
   '/collector/dashboard': typeof CollectorDashboardRoute
+  '/collector/demolished': typeof CollectorDemolishedRoute
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
   '/admin/collections/$cycleId': typeof AdminCollectionsCycleIdRoute
@@ -165,7 +181,9 @@ export interface FileRoutesById {
   '/admin/new-user': typeof AdminNewUserRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/collector/abandoned': typeof CollectorAbandonedRoute
   '/collector/dashboard': typeof CollectorDashboardRoute
+  '/collector/demolished': typeof CollectorDemolishedRoute
   '/collector/my-deposits': typeof CollectorMyDepositsRoute
   '/collector/new-deposit': typeof CollectorNewDepositRoute
   '/admin/collections/$cycleId': typeof AdminCollectionsCycleIdRoute
@@ -186,7 +204,9 @@ export interface FileRouteTypes {
     | '/admin/new-user'
     | '/admin/reports'
     | '/admin/settings'
+    | '/collector/abandoned'
     | '/collector/dashboard'
+    | '/collector/demolished'
     | '/collector/my-deposits'
     | '/collector/new-deposit'
     | '/admin/collections/$cycleId'
@@ -205,7 +225,9 @@ export interface FileRouteTypes {
     | '/admin/new-user'
     | '/admin/reports'
     | '/admin/settings'
+    | '/collector/abandoned'
     | '/collector/dashboard'
+    | '/collector/demolished'
     | '/collector/my-deposits'
     | '/collector/new-deposit'
     | '/admin/collections/$cycleId'
@@ -224,7 +246,9 @@ export interface FileRouteTypes {
     | '/admin/new-user'
     | '/admin/reports'
     | '/admin/settings'
+    | '/collector/abandoned'
     | '/collector/dashboard'
+    | '/collector/demolished'
     | '/collector/my-deposits'
     | '/collector/new-deposit'
     | '/admin/collections/$cycleId'
@@ -323,11 +347,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/collector/abandoned': {
+      id: '/collector/abandoned'
+      path: '/abandoned'
+      fullPath: '/collector/abandoned'
+      preLoaderRoute: typeof CollectorAbandonedRouteImport
+      parentRoute: typeof CollectorRouteRoute
+    }
     '/collector/dashboard': {
       id: '/collector/dashboard'
       path: '/dashboard'
       fullPath: '/collector/dashboard'
       preLoaderRoute: typeof CollectorDashboardRouteImport
+      parentRoute: typeof CollectorRouteRoute
+    }
+    '/collector/demolished': {
+      id: '/collector/demolished'
+      path: '/demolished'
+      fullPath: '/collector/demolished'
+      preLoaderRoute: typeof CollectorDemolishedRouteImport
       parentRoute: typeof CollectorRouteRoute
     }
     '/collector/my-deposits': {
@@ -394,13 +432,17 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface CollectorRouteRouteChildren {
+  CollectorAbandonedRoute: typeof CollectorAbandonedRoute
   CollectorDashboardRoute: typeof CollectorDashboardRoute
+  CollectorDemolishedRoute: typeof CollectorDemolishedRoute
   CollectorMyDepositsRoute: typeof CollectorMyDepositsRoute
   CollectorNewDepositRoute: typeof CollectorNewDepositRoute
 }
 
 const CollectorRouteRouteChildren: CollectorRouteRouteChildren = {
+  CollectorAbandonedRoute: CollectorAbandonedRoute,
   CollectorDashboardRoute: CollectorDashboardRoute,
+  CollectorDemolishedRoute: CollectorDemolishedRoute,
   CollectorMyDepositsRoute: CollectorMyDepositsRoute,
   CollectorNewDepositRoute: CollectorNewDepositRoute,
 }
