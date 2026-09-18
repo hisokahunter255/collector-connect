@@ -34,6 +34,8 @@ type Row = {
   id: string;
   subscription_no: string;
   reading: number;
+  previous_reading: number | null;
+  current_reading: number | null;
   notes: string | null;
   images: string[];
   reviewed: boolean;
@@ -48,7 +50,15 @@ function HighReadingsPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [subscriptionNo, setSubscriptionNo] = useState("");
-  const [reading, setReading] = useState("");
+  const [previousReading, setPreviousReading] = useState("");
+  const [currentReading, setCurrentReading] = useState("");
+  const diff =
+    previousReading !== "" &&
+    currentReading !== "" &&
+    Number.isFinite(Number(previousReading)) &&
+    Number.isFinite(Number(currentReading))
+      ? Number(currentReading) - Number(previousReading)
+      : null;
   const [notes, setNotes] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
