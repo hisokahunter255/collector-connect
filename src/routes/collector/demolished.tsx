@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PropertyReportSection } from "@/components/app/property-report-section";
+import { BackButton } from "@/components/app/back-button";
 
 export const Route = createFileRoute("/collector/demolished")({
   head: () => ({
@@ -13,11 +14,14 @@ export const Route = createFileRoute("/collector/demolished")({
     ],
   }),
   component: () => (
-    <PropertyReportSection
-      table="demolished_properties"
-      title="العقارات التي تم هدمها"
-      description="أضف رقم العقار المهدوم والاشتراكات التي ما زالت تعمل وصور العقار."
-      subsLabel="الاشتراكات التي ما زالت تعمل"
-    />
+    <div className="space-y-4">
+      <BackButton to="/collector/dashboard" label="رجوع" />
+      <PropertyReportSection
+        table="demolished_properties"
+        title="العقارات التي تم هدمها"
+        description="أضف رقم العقار المهدوم والاشتراكات التي ما زالت تعمل وصور العقار."
+        subsLabel="الاشتراكات التي ما زالت تعمل"
+      />
+    </div>
   ),
 });

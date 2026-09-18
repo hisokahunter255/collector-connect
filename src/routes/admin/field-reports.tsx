@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { ReceiptThumb } from "@/components/app/receipt-image";
+import { BackButton } from "@/components/app/back-button";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -75,6 +76,7 @@ function useRows(table: Table) {
 function FieldReportsPage() {
   return (
     <div className="space-y-5">
+      <BackButton to="/admin/dashboard" label="رجوع" />
       <div>
         <h1 className="text-xl font-bold">تقارير الميدان</h1>
         <p className="text-sm text-muted-foreground">
