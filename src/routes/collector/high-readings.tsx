@@ -69,7 +69,9 @@ function HighReadingsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("high_readings")
-        .select("id, subscription_no, reading, notes, images, reviewed, created_at")
+        .select(
+          "id, subscription_no, reading, previous_reading, current_reading, notes, images, reviewed, created_at",
+        )
         .eq("collector_id", profile!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -98,8 +100,14 @@ function HighReadingsPage() {
     mutationFn: async () => {
       if (!profile) throw new Error("لم يتم تحميل بيانات الحساب");
       if (!subscriptionNo.trim()) throw new Error("أدخل رقم الاشتراك");
-      const value = Number(reading);
-      if (!Number.isFinite(value) || value <= 0) throw new Error("أدخل القراءة العالية بشكل صحيح");
+      const prev = Number(previousReading);
+      const curr = Number(currentReading);
+      if (previousReading === "" || !Number.isFinite(prev) || prev < 0)
+        throw new Error("أدخل القراءة السابقة بشكل صحيح");
+      if (currentReading === "" || !Number.isFinite(curr) || curr < 0)
+        throw new Error("أدخل القراءة الحالية بشكل صحيح");
+      const value = curr - prev;
+      if (value <= 0) throw new Error("القراءة الحالية يجب أن تكون أكبر من السابقة");
 
       const paths: string[] = [];
       for (const file of files) {
