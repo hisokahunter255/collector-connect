@@ -120,7 +120,7 @@ function CollectorDashboard() {
         </Link>
       </Button>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div dir="rtl" className="grid gap-3 sm:grid-cols-3">
         <Button asChild variant="outline" className="h-14 w-full text-base">
           <Link to="/collector/abandoned">
             <Home className="size-5" /> العقارات المهجورة
