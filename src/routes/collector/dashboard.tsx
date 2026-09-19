@@ -137,6 +137,18 @@ function CollectorDashboard() {
           </Link>
         </Button>
       </div>
+
+      {(sections ?? []).length ? (
+        <div dir="rtl" className="grid gap-3 sm:grid-cols-3">
+          {(sections ?? []).map((section) => (
+            <Button key={section.id} asChild variant="outline" className="h-14 w-full text-base">
+              <Link to="/collector/section/$sectionId" params={{ sectionId: section.id }}>
+                <LayoutGrid className="size-5" /> {section.name}
+              </Link>
+            </Button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
