@@ -7,6 +7,7 @@ import {
   Gauge,
   Hammer,
   Home,
+  LayoutGrid,
   Megaphone,
   Receipt,
   Wallet,
@@ -19,6 +20,7 @@ import { formatMoney, formatNumber, isoDayStart } from "@/lib/format";
 import { StatCard } from "@/components/app/stat-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCustomSections } from "@/components/app/section-manager";
 
 export const Route = createFileRoute("/collector/dashboard")({
   head: () => ({
@@ -56,6 +58,8 @@ function CollectorDashboard() {
       return (data ?? []) as { id: string; message: string }[];
     },
   });
+
+  const { data: sections } = useCustomSections(true);
 
   const stats = summarize(today ?? []);
 
