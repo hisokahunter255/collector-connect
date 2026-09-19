@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { ReceiptThumb } from "@/components/app/receipt-image";
 import { BackButton } from "@/components/app/back-button";
+import { useCustomSections } from "@/components/app/section-manager";
+import { fieldDef, type CustomSection, type CustomSectionEntry } from "@/lib/custom-sections";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -266,7 +268,7 @@ function ReportList({ table, subsLabel }: { table: Table; subsLabel: string }) {
 
   return (
     <>
-      <div className="grid gap-3 md:grid-cols-2">
+      <div dir="rtl" className="grid gap-3 md:grid-cols-2">
         {(rows.data ?? []).map((row) => (
           <div key={row.id} className="card-elevated space-y-2 p-4 text-sm">
             <div className="flex items-center justify-between">
