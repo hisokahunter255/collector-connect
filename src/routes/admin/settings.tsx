@@ -13,6 +13,7 @@ import {
   updateMyCredentials,
 } from "@/lib/account.functions";
 import { useAuth } from "@/hooks/use-auth";
+import { SectionManager } from "@/components/app/section-manager";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
