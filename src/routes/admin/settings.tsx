@@ -202,6 +202,8 @@ function SettingsPage() {
         </p>
       </div>
 
+      <SectionManager />
+
       <form onSubmit={onSubmit} className="card-elevated max-w-lg space-y-4 p-5">
         <div className="space-y-2">
           <Label htmlFor="full-name">الاسم</Label>
